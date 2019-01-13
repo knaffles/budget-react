@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Budget</title>
+  <link type="text/css" rel="stylesheet" media="all" href="bootstrap/css/bootstrap.css" />
+  <link type="text/css" rel="stylesheet" media="all" href="css/style.css" />
+</head>
+<body>
+
+<div id="header"></div>
+
+<div id="loading">
+  <p>One second please...</p>
+</div>
+
+<div class="center-block" id="login-container">
+  <form class="text-center">
+    <button class="btn btn-primary" id="login">Login</button>
+  </form>
+</div>
+
+<div id="links">
+<p>Get started...</p>
+<ul>
+<li><a href="expenses.html">View Expenses</a></li>
+<li><a href="budget.html">View Budget</a></li>
+<li><a href="import.html">Import Data</a></li>
+</ul>
+
+<form id="sharing">
+  <div class="form-group">
+    <label for="sharing__ids">The following user accounts have been shared with you. Choose one to masquerade as that user.</label>
+    <select id="sharing__ids" class="form-control">
+      <option value="">Choose...</option>
+    </select>
+  </div>
+  <button class="btn btn-primary" id="sharing__save" type="submit">Save</button>
+  <button class="btn btn-default" id="sharing__stop" type="button">Stop Masquerading</button>
+</form>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.2.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyDNwvqO9xGZncb4Je9kHAy5Z-Yt1SgfoY4",
+    authDomain: "budget-25e47.firebaseapp.com",
+    databaseURL: "https://budget-25e47.firebaseio.com",
+    projectId: "budget-25e47",
+    storageBucket: "budget-25e47.appspot.com",
+    messagingSenderId: "82670125237"
+  };
+  firebase.initializeApp(config);
+</script>
+<script src="js/vendor/jquery.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/vendor/mustache.min.js"></script>
+<script src="js/render-home.js"></script>
+<!-- <script src="js/firebase.js"></script>
+<script src="js/main.js"></script> -->
+
+<!-- Code specific to this page -->
+<script src="js/index.js"></script>
+
+</body>
+</html>
