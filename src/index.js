@@ -1,10 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { render } from 'react-dom';
+import Router from './Router';
 // import './index.css';
-import App from './App';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+render(<Router />, document.querySelector('#content'));
 
-if (module.hot) {
-  module.hot.accept();
-}
+// if (module.hot) {
+//   module.hot.accept();
+// }
