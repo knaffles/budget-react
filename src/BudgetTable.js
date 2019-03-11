@@ -7,11 +7,15 @@ class BudgetTable extends React.Component {
     super(props);
 
     this.state = {
-      amounts: [], // TODO Replace with call to firebase to load data. See componentDidMounts
+      amounts: [],
       year: this.props.year,
     }
 
+    // this.transactions = new Transactions();
+    // // TODO - Replace with call to firebase to load data. See componentDidMount.
+    // this.transactions.assignRows(sampleAmounts);
     this.state.amounts = sampleAmounts;
+
     this.categoryArray = [];
   }
 
@@ -19,11 +23,7 @@ class BudgetTable extends React.Component {
     // Loop through all entries and construct an array of unique budget
     // categories.
     // categoryArray = getUniqueCategories(this.state.amounts);
-    this.categoryArray = [
-      'Category One',
-      'Category Two',
-      'Category Three',
-    ];
+    this.categoryArray = this.getCategoryList(this.state.year);
   }
 
   componentDidMount() {
@@ -32,29 +32,30 @@ class BudgetTable extends React.Component {
     // https://reactjs.org/docs/react-component.html#componentdidmount
   }
 
+  // Get the list of all categories in the budget for a given year.
+  getCategoryList(year) {
+    var result = this.state.amounts.reduce(function(allCategories, element) {
+      if (allCategories.indexOf(element.Category) > -1) {
+        return allCategories;
+      } else {
+        if (element.Year === year) {
+          allCategories.push(element.Category);
+        }
+
+        return allCategories;
+      }
+    }, []);
+
+    return result;
+  }
+
+
   // Given a category, get all the amounts for that category.
   getAmountsByCategory(category) {
     // TODO Replace with code.
-    const amountsByCategory = [
-      {
-        "Category": "Auto Insurance",
-        "Month": "1",
-        "Amount": "80.00",
-        "Year": "2017"
-      },
-      {
-        "Category": "Auto Insurance",
-        "Month": "2",
-        "Amount": "90.00",
-        "Year": "2017"
-      },
-      {
-        "Category": "Auto Insurance",
-        "Month": "3",
-        "Amount": "60.00",
-        "Year": "2017"
-      },
-    ];
+    const amountsByCategory = this.state.amounts.filter(item => {
+      return (item.Category === category);
+    });
 
     return amountsByCategory;
   }
@@ -63,11 +64,22 @@ class BudgetTable extends React.Component {
     const monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const monthTotals = [];
     let grandTotal = 0;
+    let _this = this;
 
     for (var month = 1; month <= 12; month++) {
       const total = this.state.amounts.reduce(function(acc, currValue) {
-        if (parseInt(currValue.Month) === month) {
-          return parseInt(currValue.Amount) + acc;
+        if (
+          parseInt(currValue.Month) === month &
+          currValue.Year === _this.state.year
+        ) {
+          if (currValue.Category) {
+            console.log(currValue.Category);
+            if (_this.props.categoryLookup.getType(currValue.Category) === 'Income') {
+              return acc + parseInt(currValue.Amount);
+            } else {
+              return acc - parseInt(currValue.Amount);
+            }            
+          }
         }
         else {
           return acc;
@@ -94,6 +106,7 @@ class BudgetTable extends React.Component {
 
 
     return (
+      <div>
       <table id="expenses" className="table table-striped table-bordered table-budget">
         <caption>Expenses</caption>
         <thead>
@@ -115,9 +128,11 @@ class BudgetTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          { this.categoryArray.map(key => 
+          { this.categoryArray.map(key =>
+            this.props.categoryLookup.getType(key) === 'Expense' &&
             <BudgetRow
               category={ key }
+              categoryLookup={ this.props.categoryLookup }
               amounts={ this.getAmountsByCategory(key) }
               key={ key }/>
           )}
@@ -130,6 +145,45 @@ class BudgetTable extends React.Component {
           </tr>
         </tbody>
       </table>
+      <table id="income" className="table table-striped table-bordered table-budget">
+        <caption>Income</caption>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>JAN</th>
+            <th>FEB</th>
+            <th>MAR</th>
+            <th>APR</th>
+            <th>MAY</th>
+            <th>JUN</th>
+            <th>JUL</th>
+            <th>AUG</th>
+            <th>SEP</th>
+            <th>OCT</th>
+            <th>NOV</th>
+            <th>DEC</th>
+            <th className="totals">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          { this.categoryArray.map(key =>
+            this.props.categoryLookup.getType(key) === 'Income' &&
+            <BudgetRow
+              category={ key }
+              categoryLookup={ this.props.categoryLookup }
+              amounts={ this.getAmountsByCategory(key) }
+              key={ key }/>
+          )}
+          <tr>
+            <td>Totals:</td>
+            { monthArray.map(key => 
+              <td key={ key }>{ getMonthTotals(key) }</td>
+            )}
+            <td>{ grandTotal }</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
     );
   }
 }

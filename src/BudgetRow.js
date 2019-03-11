@@ -18,17 +18,24 @@ const monthArray = [
 class BudgetRow extends React.Component {
   constructor(props) {
     super(props);
+
+    this.categoryLookup = this.props.categoryLookup;
+    this.category = this.props.category;
   }
 
   render() {
     let rowTotal = 0;
+
+    // Find out if our category has a parent category.
+    var catParent = this.categoryLookup.getParent(this.category);
+    catParent = (!catParent) ? this.category : catParent;
 
     const getThisMonth = key => {
       const result = this.props.amounts.filter(item => {
         return (item.Month === key);
       })
 
-      if (result.length > 0) {
+      if (result.length > 0) {        
         var thisAmount = parseInt(result[0].Amount);
         rowTotal += thisAmount;
         return result[0].Amount;
@@ -39,7 +46,7 @@ class BudgetRow extends React.Component {
 
     return (
       <tr>
-        <td>{ this.props.category }</td>
+        <td>{ catParent }: { this.props.category }</td>
         { monthArray.map(key =>
           <td key={ key } >{ getThisMonth(key) }</td>
         )}
