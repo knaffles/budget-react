@@ -1,6 +1,8 @@
 import React from 'react';
 import BudgetTable from './BudgetTable';
 import CategoryLookup from './lib/Categories';
+import './css/bootstrap/css/bootstrap.css';
+import './css/style.css';
 
 class Budget extends React.Component {
   constructor(props) {
@@ -11,7 +13,7 @@ class Budget extends React.Component {
   }
 
   render() {
-    const year = '2017';
+    const year = '2018';
 
     return (
       <BudgetTable

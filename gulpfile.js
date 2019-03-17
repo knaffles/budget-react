@@ -2,13 +2,13 @@ var gulp = require('gulp');
 var sass = require('gulp-sass');
 
 gulp.task('sass', function() {
-  return gulp.src('public/scss/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
+  return gulp.src('src/css/**/*.scss') // Gets all files ending with .scss in app/scss and children dirs
     .pipe(sass())
-    .pipe(gulp.dest('public/css'))
+    .pipe(gulp.dest('src/css'))
 });
 
 gulp.task('watch', function(){
-  gulp.watch('public/scss/**/*.scss', ['sass']); 
+  gulp.watch('src/css/**/*.scss', ['sass']); 
 });
 
 gulp.task('copyjquery', function() {

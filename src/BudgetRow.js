@@ -21,6 +21,7 @@ class BudgetRow extends React.Component {
 
     this.categoryLookup = this.props.categoryLookup;
     this.category = this.props.category;
+    this.year = this.props.year;
   }
 
   render() {
@@ -31,12 +32,14 @@ class BudgetRow extends React.Component {
     catParent = (!catParent) ? this.category : catParent;
 
     const getThisMonth = key => {
+      const _this = this;
       const result = this.props.amounts.filter(item => {
-        return (item.Month === key);
+        return (parseInt(item.Month) === parseInt(key) &&
+                parseInt(item.Year) === parseInt(_this.props.year));
       })
 
       if (result.length > 0) {        
-        var thisAmount = parseInt(result[0].Amount);
+        var thisAmount = parseFloat(result[0].Amount);
         rowTotal += thisAmount;
         return result[0].Amount;
       } else {
@@ -50,7 +53,7 @@ class BudgetRow extends React.Component {
         { monthArray.map(key =>
           <td key={ key } >{ getThisMonth(key) }</td>
         )}
-        <td>{ rowTotal }</td>
+        <td class="totals">{ rowTotal.toFixed(2) }</td>
       </tr>
     );
   }
