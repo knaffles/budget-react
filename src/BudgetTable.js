@@ -15,14 +15,16 @@ class BudgetTable extends React.Component {
     // this.transactions = new Transactions();
     // // TODO - Replace with call to firebase to load data. See componentDidMount.
     // this.transactions.assignRows(sampleAmounts);
-    this.state.amounts = Helpers.convertObjToArray(sampleAmounts);
+    this.state.amounts = sampleAmounts;
+
+    // An array of the sample amounts, just to make handling them easier.
+    this.amountsArray = Helpers.convertObjToArray(sampleAmounts);
     this.categoryArray = [];
   }
 
   componentWillMount() {
     // Loop through all entries and construct an array of unique budget
     // categories.
-    // categoryArray = getUniqueCategories(this.state.amounts);
     this.categoryArray = this.getCategoryList(this.state.year);
   }
 
@@ -34,7 +36,7 @@ class BudgetTable extends React.Component {
 
   // Get the list of all categories in the budget for a given year.
   getCategoryList(year) {
-    var result = this.state.amounts.reduce(function(allCategories, element) {
+    var result = this.amountsArray.reduce(function(allCategories, element) {
       if (allCategories.indexOf(element.Category) > -1) {
         return allCategories;
       } else {
@@ -52,7 +54,7 @@ class BudgetTable extends React.Component {
 
   // Given a category, get all the amounts for that category.
   getAmountsByCategory(category) {
-    const amountsByCategory = this.state.amounts.filter(item => {
+    const amountsByCategory = this.amountsArray.filter(item => {
       return (item.Category === category);
     });
 
@@ -61,11 +63,21 @@ class BudgetTable extends React.Component {
 
   // Get all the amounts for a given month.
   getAmountsByMonth(month) {
-    const amountsByMonth = this.state.amounts.filter(item => {
+    const amountsByMonth = this.amountsArray.filter(item => {
       return (parseInt(item.Month) === parseInt(month));
     });
 
     return amountsByMonth;
+  }
+
+  changeBudget = (key, value) => {
+    console.log(value);
+    // 1. Take a copy of the existing state
+    const amounts = { ...this.state.amounts };
+    // 2. Update the amount that is passed in.
+    amounts[key].Amount = value;
+    // 3. Set the new amounts object to state
+    this.setState({ amounts });
   }
 
   render() {
@@ -147,9 +159,10 @@ class BudgetTable extends React.Component {
               categoryLookup={ this.props.categoryLookup }
               amounts={ this.getAmountsByCategory(key) }
               year= { this.props.year }
+              changeBudget={ this.changeBudget }
               key={ key }/>
           )}
-          <tr class="totals">
+          <tr className="totals">
             <td>Totals:</td>
             { monthArray.map(key => 
               <td key={ key }>{ monthTotals.expenses[key - 1] }</td>
@@ -188,7 +201,7 @@ class BudgetTable extends React.Component {
               year={ this.props.year }
               key={ key }/>
           )}
-          <tr class="totals">
+          <tr className="totals">
             <td>Totals:</td>
             { monthArray.map(key => 
               <td key={ key }>{ monthTotals.income[key - 1] }</td>
