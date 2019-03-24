@@ -44,8 +44,8 @@ class BudgetRow extends React.Component {
       });
 
       if (result.length > 0) {        
-        var thisAmount = parseFloat(result[0].Amount);
-        rowTotal += thisAmount;
+        var thisAmount = result[0].Amount;
+        rowTotal += parseFloat(thisAmount);
 
         return thisAmount;
       } else {

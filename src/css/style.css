@@ -43,6 +43,9 @@ form {
   .table-budget > thead > tr > th:nth-child(n+2),
   .table-budget > tbody > tr > td:nth-child(n+2) {
     width: 60px; }
+  .table-budget input[type="text"] {
+    border: 0;
+    max-width: 100%; }
 
 .table-transactions > tbody > tr > td:last-child,
 .table-transactions > thead > tr > th:last-child {

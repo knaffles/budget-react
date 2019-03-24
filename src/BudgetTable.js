@@ -71,7 +71,6 @@ class BudgetTable extends React.Component {
   }
 
   changeBudget = (key, value) => {
-    console.log(value);
     // 1. Take a copy of the existing state
     const amounts = { ...this.state.amounts };
     // 2. Update the amount that is passed in.
@@ -84,11 +83,13 @@ class BudgetTable extends React.Component {
     const monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const monthTotals = {
       income:   [],
-      expenses:  []
+      expenses: [],
+      diff:     []
     };
     let grandTotal = {
-      income: 0,
-      expenses: 0
+      income:   0,
+      expenses: 0,
+      diff:     0
     };
     let _this = this;
 
@@ -120,6 +121,10 @@ class BudgetTable extends React.Component {
       monthTotals.income.push(income.toFixed(2));
       monthTotals.expenses.push(expenses.toFixed(2));
 
+      // Calculate the difference between income and expenses for this month.
+      monthTotals.diff.push((income - expenses).toFixed(2));
+      grandTotal.diff += (income - expenses);
+
       // Add to the grand totals.
       grandTotal.income += income;
       grandTotal.expenses += expenses;
@@ -128,6 +133,7 @@ class BudgetTable extends React.Component {
     // Round off the grand totals.
     grandTotal.income = grandTotal.income.toFixed(2);
     grandTotal.expenses = grandTotal.expenses.toFixed(2);
+    grandTotal.diff = grandTotal.diff.toFixed(2);
 
     return (
       <div>
@@ -165,7 +171,7 @@ class BudgetTable extends React.Component {
           <tr className="totals">
             <td>Totals:</td>
             { monthArray.map(key => 
-              <td key={ key }>{ monthTotals.expenses[key - 1] }</td>
+              <td key={ 'E' + key }>{ monthTotals.expenses[key - 1] }</td>
             )}
             <td>{ grandTotal.expenses }</td>
           </tr>
@@ -204,9 +210,49 @@ class BudgetTable extends React.Component {
           <tr className="totals">
             <td>Totals:</td>
             { monthArray.map(key => 
-              <td key={ key }>{ monthTotals.income[key - 1] }</td>
+              <td key={ 'I' + key }>{ monthTotals.income[key - 1] }</td>
             )}
             <td>{ grandTotal.income }</td>
+          </tr>
+        </tbody>
+      </table>
+
+
+      <table id="income-expenses" className="table table-striped table-bordered table-budget">
+        <caption>TOTAL Income - Expenses</caption>
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>JAN</th>
+            <th>FEB</th>
+            <th>MAR</th>
+            <th>APR</th>
+            <th>MAY</th>
+            <th>JUN</th>
+            <th>JUL</th>
+            <th>AUG</th>
+            <th>SEP</th>
+            <th>OCT</th>
+            <th>NOV</th>
+            <th>DEC</th>
+            <th className="totals">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>&nbsp;</td>
+            { monthArray.map(key => 
+              <td key={ 'IE' + key }>
+                <span className={ monthTotals.diff[key - 1] >= 0 ? "positive" : "negative" }>
+                  { monthTotals.diff[key - 1] }
+                </span>
+              </td>
+            )}
+            <td className="totals">
+              <span className={ grandTotal.diff >= 0 ? "positive" : "negative" }>
+                { grandTotal.diff }
+              </span>
+            </td>
           </tr>
         </tbody>
       </table>
