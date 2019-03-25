@@ -1,6 +1,7 @@
 import React from 'react';
-import * as Helpers from './lib/Helpers.js';
+import * as Helpers from '../lib/Helpers.js';
 import BudgetRow from './BudgetRow';
+import base from "../base";
 
 class BudgetTable extends React.Component {
 
@@ -10,28 +11,57 @@ class BudgetTable extends React.Component {
     this.state = {
       amounts: [],
       year: this.props.year,
+      dataLoaded: false
     }
 
     // this.transactions = new Transactions();
     // // TODO - Replace with call to firebase to load data. See componentDidMount.
     // this.transactions.assignRows(sampleAmounts);
-    this.state.amounts = sampleAmounts;
+    // this.state.amounts = sampleAmounts;
 
     // An array of the sample amounts, just to make handling them easier.
-    this.amountsArray = Helpers.convertObjToArray(sampleAmounts);
+    this.amountsArray = [];
     this.categoryArray = [];
   }
 
   componentWillMount() {
     // Loop through all entries and construct an array of unique budget
     // categories.
-    this.categoryArray = this.getCategoryList(this.state.year);
+    // this.categoryArray = this.getCategoryList(this.state.year);
   }
 
   componentDidMount() {
+    console.log('mounted!');
     // TODO this is where fetch the amounts from firebase.
     // See docs where it says data should be loaded in componentDidMount:
     // https://reactjs.org/docs/react-component.html#componentdidmount
+
+    this.ref = base.syncState(`amounts`, {
+      context: this,
+      state: "amounts",
+      then: function() {
+        console.log('test');
+        this.setState({dataLoaded: true});
+      }
+    });
+
+
+
+    // console.log(this.state.amounts);
+
+    // this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
+
+    // this.setState({ amounts: sampleAmounts });
+  }
+
+  componentDidUpdate() {
+    // console.log(this.state.amounts);
+    // this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
+    // this.categoryArray = this.getCategoryList(this.state.year);    
+  }
+
+  componentWillUnmount() {
+    base.removeBinding(this.ref);
   }
 
   // Get the list of all categories in the budget for a given year.
@@ -71,6 +101,7 @@ class BudgetTable extends React.Component {
   }
 
   changeBudget = (key, value) => {
+    console.log('changing');
     // 1. Take a copy of the existing state
     const amounts = { ...this.state.amounts };
     // 2. Update the amount that is passed in.
@@ -80,6 +111,15 @@ class BudgetTable extends React.Component {
   }
 
   render() {
+
+    if (!this.state.dataLoaded) {
+      return null;
+    }
+    console.log('rendering');
+    console.log(this.state.amounts);
+    this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
+    this.categoryArray = this.getCategoryList(this.state.year);
+    // console.log(this.amountsArray);
     const monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const monthTotals = {
       income:   [],

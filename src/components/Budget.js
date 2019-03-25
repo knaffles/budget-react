@@ -1,8 +1,8 @@
 import React from 'react';
 import BudgetTable from './BudgetTable';
-import CategoryLookup from './lib/Categories';
-import './css/bootstrap/css/bootstrap.css';
-import './css/style.css';
+import CategoryLookup from '../lib/Categories';
+import '../css/bootstrap/css/bootstrap.css';
+import '../css/style.css';
 
 class Budget extends React.Component {
   constructor(props) {

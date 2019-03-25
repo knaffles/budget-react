@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import CategoryLookup from './lib/Categories';
+import CategoryLookup from '../lib/Categories';
 // import './App.css';
 
 class App extends Component {
