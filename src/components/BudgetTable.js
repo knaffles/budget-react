@@ -16,8 +16,6 @@ class BudgetTable extends React.Component {
 
     // this.transactions = new Transactions();
     // // TODO - Replace with call to firebase to load data. See componentDidMount.
-    // this.transactions.assignRows(sampleAmounts);
-    // this.state.amounts = sampleAmounts;
 
     // An array of the sample amounts, just to make handling them easier.
     this.amountsArray = [];
@@ -25,9 +23,6 @@ class BudgetTable extends React.Component {
   }
 
   componentWillMount() {
-    // Loop through all entries and construct an array of unique budget
-    // categories.
-    // this.categoryArray = this.getCategoryList(this.state.year);
   }
 
   componentDidMount() {
@@ -40,24 +35,20 @@ class BudgetTable extends React.Component {
       context: this,
       state: "amounts",
       then: function() {
-        console.log('test');
         this.setState({dataLoaded: true});
       }
     });
 
+    // // Just leave this here for if/when we want to reset the budget to the
+    // // initial amounts.
+    // this.setState({
+    //   amounts: sampleAmounts,
+    //   dataLoaded: true
+    // });
 
-
-    // console.log(this.state.amounts);
-
-    // this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
-
-    // this.setState({ amounts: sampleAmounts });
   }
 
-  componentDidUpdate() {
-    // console.log(this.state.amounts);
-    // this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
-    // this.categoryArray = this.getCategoryList(this.state.year);    
+  componentDidUpdate() {   
   }
 
   componentWillUnmount() {
@@ -101,25 +92,28 @@ class BudgetTable extends React.Component {
   }
 
   changeBudget = (key, value) => {
-    console.log('changing');
-    // 1. Take a copy of the existing state
-    const amounts = { ...this.state.amounts };
-    // 2. Update the amount that is passed in.
-    amounts[key].Amount = value;
-    // 3. Set the new amounts object to state
-    this.setState({ amounts });
+    // Update the amount in firebase.
+    base.update('amounts/' + key, {
+      data: { Amount: value },
+      then(err) {
+        if (!err) {
+          console.log('Success.')
+          // Maybe do something else here to indicate state has changed and
+          // has been saved.
+        } else {
+          console.log('Failure.');
+        }
+      }
+    });
   }
 
   render() {
-
     if (!this.state.dataLoaded) {
       return null;
     }
-    console.log('rendering');
-    console.log(this.state.amounts);
     this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
     this.categoryArray = this.getCategoryList(this.state.year);
-    // console.log(this.amountsArray);
+
     const monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const monthTotals = {
       income:   [],
@@ -256,7 +250,6 @@ class BudgetTable extends React.Component {
           </tr>
         </tbody>
       </table>
-
 
       <table id="income-expenses" className="table table-striped table-bordered table-budget">
         <caption>TOTAL Income - Expenses</caption>
