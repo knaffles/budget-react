@@ -39,6 +39,19 @@ export function formatData(aNumber) {
   }
 }
 
+// Parse dates.
+export function parseDate(dateString) {
+  var month = dateString.split('/')[0],
+      year = dateString.split('/')[2];
+
+  var result = {
+    month: parseInt(month),
+    year:  parseInt(year)
+  }
+
+  return result;
+}
+
 export function getFilters($form) {
   // NEED TO DEFINE JQUERY HERE...
   // var filters = [];

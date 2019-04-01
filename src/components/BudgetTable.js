@@ -1,5 +1,6 @@
 import React from 'react';
-import * as Helpers from '../lib/Helpers.js';
+import BudgetModel from '../lib/BudgetModel';
+import * as Helpers from '../lib/Helpers';
 import BudgetRow from './BudgetRow';
 import base from "../base";
 
@@ -14,12 +15,10 @@ class BudgetTable extends React.Component {
       dataLoaded: false
     }
 
-    // this.transactions = new Transactions();
-    // // TODO - Replace with call to firebase to load data. See componentDidMount.
-
     // An array of the sample amounts, just to make handling them easier.
     this.amountsArray = [];
     this.categoryArray = [];
+    this.budgetModel = new BudgetModel();
   }
 
   componentWillMount() {
@@ -55,42 +54,6 @@ class BudgetTable extends React.Component {
     base.removeBinding(this.ref);
   }
 
-  // Get the list of all categories in the budget for a given year.
-  getCategoryList(year) {
-    var result = this.amountsArray.reduce(function(allCategories, element) {
-      if (allCategories.indexOf(element.Category) > -1) {
-        return allCategories;
-      } else {
-        if (parseInt(element.Year) === parseInt(year)) {
-          allCategories.push(element.Category);
-        }
-
-        return allCategories;
-      }
-    }, []);
-
-    return result;
-  }
-
-
-  // Given a category, get all the amounts for that category.
-  getAmountsByCategory(category) {
-    const amountsByCategory = this.amountsArray.filter(item => {
-      return (item.Category === category);
-    });
-
-    return amountsByCategory;
-  }
-
-  // Get all the amounts for a given month.
-  getAmountsByMonth(month) {
-    const amountsByMonth = this.amountsArray.filter(item => {
-      return (parseInt(item.Month) === parseInt(month));
-    });
-
-    return amountsByMonth;
-  }
-
   changeBudget = (key, value) => {
     // Update the amount in firebase.
     base.update('amounts/' + key, {
@@ -111,8 +74,10 @@ class BudgetTable extends React.Component {
     if (!this.state.dataLoaded) {
       return null;
     }
-    this.amountsArray = Helpers.convertObjToArray(this.state.amounts);
-    this.categoryArray = this.getCategoryList(this.state.year);
+
+    this.amountsArray = Helpers.convertObjToArray(this.state.amounts); // delete this eventually
+    this.budgetModel.rows = Helpers.convertObjToArray(this.state.amounts);
+    this.categoryArray = this.budgetModel.getCategoryList(this.state.year);
 
     const monthArray = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     const monthTotals = {
@@ -132,7 +97,7 @@ class BudgetTable extends React.Component {
       var expenses = 0;
 
       // Get all the amounts for this month.
-      var thisMonth = this.getAmountsByMonth(month);
+      var thisMonth = this.budgetModel.getAmountsByMonth(month);
 
       // Loop through all the amounts and add to either the income or expense
       // totals depending on the category type.
@@ -197,7 +162,7 @@ class BudgetTable extends React.Component {
             <BudgetRow
               category={ key }
               categoryLookup={ this.props.categoryLookup }
-              amounts={ this.getAmountsByCategory(key) }
+              amounts={ this.budgetModel.getAmountsByCategory(key) }
               year= { this.props.year }
               changeBudget={ this.changeBudget }
               key={ key }/>
@@ -237,7 +202,7 @@ class BudgetTable extends React.Component {
             <BudgetRow
               category={ key }
               categoryLookup={ this.props.categoryLookup }
-              amounts={ this.getAmountsByCategory(key) }
+              amounts={ this.budgetModel.getAmountsByCategory(key) }
               year={ this.props.year }
               key={ key }/>
           )}

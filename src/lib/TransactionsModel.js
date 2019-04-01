@@ -1,17 +1,22 @@
+import CategoryLookup from '../lib/Categories';
+import * as Helpers from '../lib/Helpers';
+
 // A library that defines our transacations data model.
-class Transactions {
+class TransactionsModel {
   constructor() {
     this.rows = [];
+
+    this.categoryLookup = new CategoryLookup();
   }
 
-  // Given a firebase snapshot, assign to the rows property.
-  assignRows(snapshot) {
-    // Convert the object to an array.
-    snapshot = convertObjToArray(snapshot);
+  // // Given a firebase snapshot, assign to the rows property.
+  // assignRows(snapshot) {
+  //   // Convert the object to an array.
+  //   snapshot = convertObjToArray(snapshot);
 
-    // Assign the array to the lookup object.
-    this.rows = snapshot;
-  },
+  //   // Assign the array to the lookup object.
+  //   this.rows = snapshot;
+  // }
 
   // Remove commas and convert amounts to floats.
   cleanData() {
@@ -20,14 +25,14 @@ class Transactions {
       // this.rows[i].Amount = this.rows[i].Amount.replace(/,/g, ''); // Remove commas.
       this.rows[i].Amount = parseFloat(this.rows[i].Amount);
     }
-  },
+  }
 
   // Get all the categories associated with all transactions in a given year.
   getUniqueCategories(month, year) {
     // Reduce the transactions and sum the total for each category.
 
     var result = this.rows.reduce(function(allCategories, transaction) {
-      var parsedDate = parseDate(transaction['Date']),
+      var parsedDate = Helpers.parseDate(transaction['Date']),
           thisMonth  = parsedDate.month,
           thisYear   = parsedDate.year;
 
@@ -43,7 +48,7 @@ class Transactions {
     }, []);
 
     return result;
-  },
+  }
 
   getTransactionsInMonthYear(category, month, year) {
     var dataSet = this.rows.filter(function(transaction) {
@@ -63,12 +68,12 @@ class Transactions {
       // If so, get all of its children, and when testing the categories below,
       // check to see if the transaction.Category equals the parent or any of its children.
       // If not, just proceed as normal.
-      var parent = categoryLookup.getParent(category);
+      var parent = this.categoryLookup.getParent(category);
       if (parent) {
         // Do nothing
       } else {
         // The category is itself a parent.
-        var children = categoryLookup.getChildren(category);
+        var children = this.categoryLookup.getChildren(category);
         categoryFamily = categoryFamily.concat(children); 
       }
 
@@ -78,7 +83,7 @@ class Transactions {
     });
 
     return dataSet;
-  },
+  }
 
   getTransactionsYTD(category, month, year) {
     var dataSet = [];
@@ -88,16 +93,16 @@ class Transactions {
     }
 
     return dataSet;
-  },
+  }
 
   // Get the sum of all Amount in a series of transactions.
   // Technically, doesn't need to be a method on this object.
   getSum(dataSet) {
     var sum = 0;
 
-    $(dataSet).each(function(key, val) {
+    dataSet.forEach(function(key, val) {
 
-      var catType = categoryLookup.getType(val['Category']);
+      var catType = this.categoryLookup.getType(val['Category']);
 
       if (val['Transaction Type'] == 'debit') {
         if (catType == 'Expense') {
@@ -116,13 +121,13 @@ class Transactions {
     })
 
     return sum;
-  },
+  }
 
   // Technically, doesn't need to be a method on this object.
   sort(dataSet, sortColumn) {
     var result = dataSet.sort(function(a, b) {
-      first = a[sortColumn].toUpperCase();
-      second = b[sortColumn].toUpperCase();
+      var first = a[sortColumn].toUpperCase(),
+          second = b[sortColumn].toUpperCase();
       
       if (first < second) {
         return -1;
@@ -140,4 +145,4 @@ class Transactions {
   }
 }
 
-export default Transactions;
+export default TransactionsModel;

@@ -1,19 +1,31 @@
 import * as Helpers from './Helpers';
+import base from "../base";
 
 class CategoryLookup {
-  constructor() {
+  constructor(ready) {
     this.categories = [];
+
+    // Fetch the data from firebase.
+    base.fetch('categories', {
+      context: this,
+      asArray: true,
+      then(data) {
+        console.log(data);
+        this.categories = data;
+        ready();
+      }
+    });
   }
 
   // categories: [],
 
   // Given a firebase snapshot, assign to the categories property.
-  assignRows(snapshot) {
-    // Convert the object to an array.
-    snapshot = Helpers.convertObjToArray(snapshot);
+  assignRows() {
+    // // Convert the object to an array.
+    // snapshot = Helpers.convertObjToArray(snapshot);
 
-    // Assign the array to the lookup object.
-    this.categories = snapshot;
+    // // Assign the array to the lookup object.
+    // this.categories = snapshot;
   }
 
   getParent(category) {

@@ -4,7 +4,7 @@ import CategoryLookup from '../lib/Categories';
 import '../css/bootstrap/css/bootstrap.css';
 import '../css/style.css';
 
-class Budget extends React.Component {
+class BudgetPage extends React.Component {
   constructor(props) {
     super(props);
 
@@ -24,7 +24,7 @@ class Budget extends React.Component {
 
 }
 
-export default Budget;
+export default BudgetPage;
 
 const allCategories = 
 {
