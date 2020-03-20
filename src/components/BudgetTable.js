@@ -12,13 +12,16 @@ class BudgetTable extends React.Component {
     this.state = {
       amounts: [],
       year: this.props.year,
-      dataLoaded: false
+      dataSynced: false,
+      budgetLoaded: false
     }
 
     // An array of the sample amounts, just to make handling them easier.
-    this.amountsArray = [];
     this.categoryArray = [];
-    this.budgetModel = new BudgetModel();
+
+    // Load the budget and call budgetReady when done.
+    this.budgetReady = this.budgetReady.bind(this);
+    this.budgetModel = new BudgetModel(this.budgetReady);
   }
 
   componentWillMount() {
@@ -34,7 +37,7 @@ class BudgetTable extends React.Component {
       context: this,
       state: "amounts",
       then: function() {
-        this.setState({dataLoaded: true});
+        this.setState({ dataSynced: true });
       }
     });
 
@@ -42,7 +45,7 @@ class BudgetTable extends React.Component {
     // // initial amounts.
     // this.setState({
     //   amounts: sampleAmounts,
-    //   dataLoaded: true
+    //   dataSynced: true
     // });
 
   }
@@ -52,6 +55,10 @@ class BudgetTable extends React.Component {
 
   componentWillUnmount() {
     base.removeBinding(this.ref);
+  }
+
+  budgetReady() {
+    this.setState({ budgetReady: true });
   }
 
   changeBudget = (key, value) => {
@@ -71,11 +78,10 @@ class BudgetTable extends React.Component {
   }
 
   render() {
-    if (!this.state.dataLoaded) {
+    if (!this.state.dataSynced || !this.state.budgetReady) {
       return null;
     }
 
-    this.amountsArray = Helpers.convertObjToArray(this.state.amounts); // delete this eventually
     this.budgetModel.rows = Helpers.convertObjToArray(this.state.amounts);
     this.categoryArray = this.budgetModel.getCategoryList(this.state.year);
 

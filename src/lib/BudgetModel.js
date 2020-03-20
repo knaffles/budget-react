@@ -1,7 +1,56 @@
+import base from "../base";
+
 // A library that defines our budget data model.
 class BudgetModel {
-  constructor() {
+  constructor(ready) {
     this.rows = [];
+
+    // Fetch the data from firebase.
+    base.fetch('amounts', {
+      context: this,
+      asArray: true,
+      then(data) {
+        this.rows = data;
+
+        if (ready) {
+          ready();  
+        }
+      }
+    });
+  }
+
+  // Get the budget amount for a category/month/year.
+  getCategory(category, month, year) {
+    var budgetAmount = this.rows.find(function(element) {
+      return (
+        element.Category  === category  &&
+        element.Month     === month     &&
+        element.Year      === year
+      );
+    });
+
+    if (budgetAmount) {
+      return budgetAmount.Amount;  
+    } else {
+      return 0;
+    }
+  }
+
+  // Get the YTD budget for a category/month/year
+  getCategoryYTD(category, month, year) {
+    var budgetYTD = this.rows.reduce(function(sum, element) {
+      if (
+        element.Category  === category &&
+        element.Month     <=  month    &&
+        element.Year      === year
+      ) {
+        return sum + element.Amount;
+      } else {
+        return sum;
+      }
+    }, 0);
+
+    return budgetYTD;
   }
 
   // Get the list of all categories in the budget for a given year.

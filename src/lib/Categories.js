@@ -5,14 +5,19 @@ class CategoryLookup {
   constructor(ready) {
     this.categories = [];
 
+    console.log(ready);
+
     // Fetch the data from firebase.
     base.fetch('categories', {
       context: this,
       asArray: true,
       then(data) {
-        console.log(data);
+        // console.log(data);
         this.categories = data;
-        ready();
+
+        if (ready) {
+          ready();  
+        }
       }
     });
   }

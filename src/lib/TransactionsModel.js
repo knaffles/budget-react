@@ -1,12 +1,26 @@
 import CategoryLookup from '../lib/Categories';
 import * as Helpers from '../lib/Helpers';
+import base from "../base";
 
 // A library that defines our transacations data model.
 class TransactionsModel {
-  constructor() {
+  constructor(ready) {
     this.rows = [];
 
     this.categoryLookup = new CategoryLookup();
+
+    // Fetch the data from firebase.
+    base.fetch('transaction', {
+      context: this,
+      asArray: true,
+      then(data) {
+        this.categories = data;
+
+        if (ready) {
+          ready();  
+        }
+      }
+    });
   }
 
   // // Given a firebase snapshot, assign to the rows property.
