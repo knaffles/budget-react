@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "Account": "Visa",
+      "Category": "Entertainment",
+      "Amount": 25,
+      "Date": "1/06/2024",
+      "Merchant": "AMC"
+    },
+    {
+      "id": 2,
+      "Account": "Checking",
+      "Category": "Kids Activities",
+      "Amount": 50,
+      "Date": "1/08/2024",
+      "Merchant": "Music School"
+    },
+    {
+      "id": 3,
+      "Account": "Visa",
+      "Category": "Restaurants",
+      "Amount": 86.54,
+      "Date": "1/09/2024",
+      "Merchant": "Libertad"
+    }
+  ]
+}
