@@ -32,7 +32,7 @@ function App() {
   }, []);
 
   return (
-    <AppContext.Provider value={{ year, setYear }}>
+    <AppContext.Provider value={{ year, setYear, user: "user1" }}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

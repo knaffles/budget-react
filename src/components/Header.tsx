@@ -6,7 +6,7 @@ import { years } from "../data/constants";
 const Header = () => {
   const appContext = useContext(AppContext);
   const handleSelectYear = (event: any) => {
-    appContext?.setYear && appContext.setYear(event.target.value);
+    appContext?.setYear && appContext.setYear(parseInt(event.target.value));
   };
 
   console.log("app year: ", appContext?.year);
