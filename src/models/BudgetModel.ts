@@ -1,35 +1,23 @@
 import { sort } from "./utils";
 import { ICategoryModel } from "./CategoryModel";
 
-interface IBudgetModel {
-  rows: [];
-  budgetExpenses: [];
-  budgetIncome: [];
-  budgetDiff: [];
-  totalExpenses: object;
-  totalIncome: object;
+class BudgetModel {
   categoryModel: ICategoryModel;
+  rows: any;
   thisYear: number;
-}
+  budgetExpenses = [];
+  budgetIncome = [];
+  budgetDiff = [];
+  totalExpenses = {};
+  totalIncome = {};
 
-const BudgetModel = function (
-  this: IBudgetModel,
-  categoryModel: ICategoryModel,
-  budgetRows,
-  year: number
-) {
-  this.rows = budgetRows;
-  this.budgetExpenses = [];
-  this.budgetIncome = [];
-  this.budgetDiff = [];
-  this.totalExpenses = {};
-  this.totalIncome = {};
-  this.categoryModel = categoryModel;
-  this.thisYear = year;
-};
+  constructor(categoryModel: ICategoryModel, rows: any, thisYear: number) {
+    this.categoryModel = categoryModel;
+    this.rows = rows;
+    this.thisYear = thisYear;
+  }
 
-BudgetModel.prototype = {
-  buildBudgetData: function () {
+  buildBudgetData() {
     // Set everything to empty.
     this.budgetExpenses = [];
     this.budgetIncome = [];
@@ -51,17 +39,13 @@ BudgetModel.prototype = {
     for (let i = 0; i < categories.length; i++) {
       const entry = {};
 
-      // Get the parent.
-      let catParent = this.categoryModel.getParent(categories[i]);
-      catParent = !catParent ? categories[i] : catParent;
-
       // Income or expense?
       const catType = this.categoryModel.getType(categories[i]);
       console.log("catType: ", catType);
 
       entry.category = categories[i];
       entry.total = 0;
-      entry.displayCategory = catParent + ": " + categories[i];
+      entry.displayCategory = categories[i];
       entry.nodeId = categories[i].nodeId;
 
       for (let month = 1; month <= 12; month++) {
@@ -109,29 +93,29 @@ BudgetModel.prototype = {
       this.totalIncome.total - this.totalExpenses.total;
 
     console.log("built budget model");
-  },
+  }
 
   // Convert months and years to integers and then remove commas and convert amounts to floats.
-  cleanData: function () {
+  cleanData() {
     for (let i = 0; i < this.rows.length; i++) {
       this.rows[i].month = parseInt(this.rows[i].month);
       this.rows[i].year = parseInt(this.rows[i].year);
       this.rows[i].amount = this.rows[i].amount.replace(/,/g, ""); // Remove commas.
       this.rows[i].amount = parseFloat(this.rows[i].amount);
     }
-  },
+  }
 
   // Does the budget have any entries for this category?
-  hasCategory: function (category, year) {
+  hasCategory(category, year) {
     const result = this.rows.filter(function (element) {
       return element.category === category && element.year === year;
     });
 
     return result.length;
-  },
+  }
 
   // Get the list of all categories in the budget for a given year.
-  getCategoryList: function (year) {
+  getCategoryList(year) {
     const result = this.rows.reduce(function (allCategories, element) {
       if (allCategories.indexOf(element.category) > -1) {
         return allCategories;
@@ -145,10 +129,10 @@ BudgetModel.prototype = {
     }, []);
 
     return result;
-  },
+  }
 
   // Get the budget amount for a category/month/year.
-  getCategory: function (category, month, year) {
+  getCategory(category, month, year) {
     const budgetAmount = this.rows.find(function (element) {
       return (
         element.category === category &&
@@ -163,10 +147,10 @@ BudgetModel.prototype = {
     } else {
       return 0;
     }
-  },
+  }
 
   // Get the YTD budget for a category/month/year
-  getCategoryYTD: function (category, month, year) {
+  getCategoryYTD(category, month, year) {
     const budgetYTD = this.rows.reduce(function (sum, element) {
       if (
         element.category === category &&
@@ -180,9 +164,9 @@ BudgetModel.prototype = {
     }, 0);
 
     return budgetYTD;
-  },
+  }
 
-  getNodeId: function (category, month, year) {
+  getNodeId(category, month, year) {
     const nodeId = this.rows.find(function (element) {
       return (
         element.category === category &&
@@ -196,7 +180,7 @@ BudgetModel.prototype = {
     } else {
       return null;
     }
-  },
-};
+  }
+}
 
 export default BudgetModel;
