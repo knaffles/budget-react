@@ -1,21 +1,20 @@
 /**
  * ASSUMPTIONS:
- * - The user's category names in Quicken do not include any colons. Colons are assumed to seperate levels in the
- *   category hierarchy.
- * - For now, just assuming that a category can only have one parent.
+ * - Category names in Quicken are in this format:
+ *   - Parent Category:Category
+ *     ...where the Parent Category and the Category do not include any colons. The colon is
+ *     assumed to seperate the Parent Category from the Category.
+ * - A category can only have one parent (for now).
+ * - Category names are unique. When searching on category name, only one result will be returned.
  */
+import { ICategory } from "../types/Category";
 
 export interface ICategoryModel {
   categories: ICategory[];
   getParent(category: string): void;
   getChildren(category: string): void;
-  getType(category: string): void;
+  getType(category: string): string;
   isEnvelope(category: string): void;
-}
-
-export interface ICategory {
-  envelope: boolean;
-  nodeId: string;
 }
 
 class CategoryModel implements ICategoryModel {
@@ -49,13 +48,13 @@ class CategoryModel implements ICategoryModel {
     if (colonIndex === -1) {
       const children = this.categories.filter(function (element) {
         let parent = "";
-        const colonIndex = element.nodeId.indexOf(":");
+        const colonIndex = element.name.indexOf(":");
 
         if (colonIndex > -1) {
           parent = category.slice(0, colonIndex);
         }
 
-        return parent === category && element.nodeId !== category;
+        return parent === category && element.name !== category;
       });
 
       for (let i = 0; i < children.length; i++) {
@@ -68,25 +67,25 @@ class CategoryModel implements ICategoryModel {
 
   getType(category: string) {
     const result = this.categories.find(function (element) {
-      return element.nodeId == category;
+      return element.name == category;
     });
 
     console.log("getType result: ", result);
 
     if (result) {
-      if (result.nodeId.slice(0, 6) == "Income") {
+      if (result.name.slice(0, 6) == "Income") {
         return "Income";
       } else {
         return "Expense";
       }
     } else {
-      return null;
+      return "";
     }
   }
 
   isEnvelope(category: string) {
     const result = this.categories.find(function (element) {
-      return element.nodeId == category;
+      return element.name == category;
     });
 
     if (result) {

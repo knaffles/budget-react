@@ -4,18 +4,20 @@ import { AppContext } from "../App";
 import BudgetModel from "../models/BudgetModel";
 import CategoryModel from "../models/CategoryModel";
 import { db } from "../services/firebase";
-import { ICategory } from "../models/CategoryModel";
+import { ICategory } from "../types/Category";
+import { IBudget } from "../types/Budget";
+import { IBudgetRowEntry } from "../models/BudgetModel";
 
 const Budget = () => {
   const appContext = useContext(AppContext);
-  const [budget, setBudget] = useState([]);
+  const [budget, setBudget] = useState<IBudgetRowEntry[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       const qBudget = query(collection(db, `user/${appContext?.user}/budget`));
       const querySnapshotBudget = await getDocs(qBudget);
       const budgetResult = querySnapshotBudget.docs.map((doc) => {
-        const result = doc.data();
+        const result = doc.data() as IBudget;
         result.nodeId = doc.id;
         return result;
       });
