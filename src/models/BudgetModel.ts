@@ -108,7 +108,6 @@ class BudgetModel implements IBudgetModel {
 
       // Income or expense?
       const catType = this.categoryModel.getType(categories[i]);
-      console.log("catType: ", catType);
 
       entry.category = categories[i];
       entry.total = 0;
@@ -215,7 +214,6 @@ class BudgetModel implements IBudgetModel {
     });
 
     if (budgetAmount) {
-      console.log("budgetAmount: ", budgetAmount);
       return budgetAmount.amount;
     } else {
       return 0;

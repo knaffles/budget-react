@@ -29,10 +29,7 @@ class CategoryModel implements ICategoryModel {
     const colonIndex = category.indexOf(":");
 
     if (colonIndex > -1) {
-      const parent = category.slice(0, colonIndex);
-      console.log("parent:");
-      console.log(parent);
-      return parent;
+      return category.slice(0, colonIndex);
     }
     return null;
   }
@@ -69,8 +66,6 @@ class CategoryModel implements ICategoryModel {
     const result = this.categories.find(function (element) {
       return element.name == category;
     });
-
-    console.log("getType result: ", result);
 
     if (result) {
       if (result.name.slice(0, 6) == "Income") {

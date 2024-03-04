@@ -5,11 +5,10 @@ import { years } from "../data/constants";
 
 const Header = () => {
   const appContext = useContext(AppContext);
-  const handleSelectYear = (event: any) => {
+  const handleSelectYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
     appContext?.setYear && appContext.setYear(parseInt(event.target.value));
   };
 
-  console.log("app year: ", appContext?.year);
   return (
     <header>
       <div className="navbar bg-base-200 mb-4">
