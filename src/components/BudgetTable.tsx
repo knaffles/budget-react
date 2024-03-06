@@ -36,63 +36,65 @@ export const BudgetTable: FC<IBudgetTable> = ({
   const monthsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   return (
-    <table className={`table ${styles["budget-table"]}`}>
-      <caption className="text-left">{label}</caption>
-      <thead>
-        <tr>
-          <th>{firstColLabel}</th>
-          <th>JAN</th>
-          <th>FEB</th>
-          <th>MAR</th>
-          <th>APR</th>
-          <th>MAY</th>
-          <th>JUN</th>
-          <th>JUL</th>
-          <th>AUG</th>
-          <th>SEP</th>
-          <th>OCT</th>
-          <th>NOV</th>
-          <th>DEC</th>
-          <th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((category) => {
-          {
-            return (
-              <tr key={category.category}>
-                <td>{category.displayCategory}</td>
-                {monthsArray.map((month) => (
-                  <td key={month}>
-                    <FormattedData
-                      data={category[("month" + month) as keyof IMonths]}
-                    />
+    <div className="overflow-x-auto">
+      <table className={`table table-xs ${styles["budget-table"]}`}>
+        <caption className="text-left">{label}</caption>
+        <thead>
+          <tr>
+            <th>{firstColLabel}</th>
+            <th>JAN</th>
+            <th>FEB</th>
+            <th>MAR</th>
+            <th>APR</th>
+            <th>MAY</th>
+            <th>JUN</th>
+            <th>JUL</th>
+            <th>AUG</th>
+            <th>SEP</th>
+            <th>OCT</th>
+            <th>NOV</th>
+            <th>DEC</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data.map((category) => {
+            {
+              return (
+                <tr key={category.category}>
+                  <td>{category.displayCategory}</td>
+                  {monthsArray.map((month) => (
+                    <td key={month}>
+                      <FormattedData
+                        data={category[("month" + month) as keyof IMonths]}
+                      />
+                    </td>
+                  ))}
+                  <td>
+                    <FormattedData data={category.total} />
                   </td>
-                ))}
-                <td>
-                  <FormattedData data={category.total} />
-                </td>
-              </tr>
-            );
-          }
-        })}
-      </tbody>
-      <tfoot>
-        <tr className="font-bold">
-          <td>TOTALS</td>
-          {monthsArray.map((month) => (
-            <td key={month}>
-              <FormattedData
-                data={totals[("month" + month) as keyof IMonths]}
-              />
+                </tr>
+              );
+            }
+          })}
+        </tbody>
+        <tfoot>
+          <tr className="font-bold">
+            <td>TOTALS</td>
+            {monthsArray.map((month) => (
+              <td key={month}>
+                <FormattedData
+                  data={totals[("month" + month) as keyof IMonths]}
+                />
+              </td>
+            ))}
+            <td>
+              <FormattedData data={totals.total} />
             </td>
-          ))}
-          <td>
-            <FormattedData data={totals.total} />
-          </td>
-        </tr>
-      </tfoot>
-    </table>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   );
 };
 
@@ -100,39 +102,43 @@ export const BudgetDiff: FC<IBudgetDiff> = ({ label, data }) => {
   const monthsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
   return (
-    <table className={`table ${styles["budget-table"]}`}>
-      <caption className="text-left">{label}</caption>
-      <thead>
-        <tr>
-          <th></th>
-          <th>JAN</th>
-          <th>FEB</th>
-          <th>MAR</th>
-          <th>APR</th>
-          <th>MAY</th>
-          <th>JUN</th>
-          <th>JUL</th>
-          <th>AUG</th>
-          <th>SEP</th>
-          <th>OCT</th>
-          <th>NOV</th>
-          <th>DEC</th>
-          <th>TOTAL</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td></td>
-          {monthsArray.map((month) => (
-            <td key={month}>
-              <FormattedData data={data[("month" + month) as keyof IMonths]} />
+    <div className="overflow-x-auto">
+      <table className={`table table-xs ${styles["budget-table"]}`}>
+        <caption className="text-left">{label}</caption>
+        <thead>
+          <tr>
+            <th></th>
+            <th>JAN</th>
+            <th>FEB</th>
+            <th>MAR</th>
+            <th>APR</th>
+            <th>MAY</th>
+            <th>JUN</th>
+            <th>JUL</th>
+            <th>AUG</th>
+            <th>SEP</th>
+            <th>OCT</th>
+            <th>NOV</th>
+            <th>DEC</th>
+            <th>TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td></td>
+            {monthsArray.map((month) => (
+              <td key={month}>
+                <FormattedData
+                  data={data[("month" + month) as keyof IMonths]}
+                />
+              </td>
+            ))}
+            <td>
+              <FormattedData data={data.total} />
             </td>
-          ))}
-          <td>
-            <FormattedData data={data.total} />
-          </td>
-        </tr>
-      </tbody>
-    </table>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 };

@@ -1,3 +1,5 @@
+// TODO: Save theme in localStorage.
+
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { AppContext } from "../App";
@@ -31,25 +33,39 @@ const Header = () => {
           </ul>
         </nav>
       </div>
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Select the year:</span>
-        </div>
-        <select
-          className="select select-bordered"
-          onChange={handleSelectYear}
-          value={appContext?.year ?? ""}
+      <div className="flex justify-between">
+        <label className="flex items-center">
+          <div className="label">
+            <span className="label-text">Select the year:</span>
+          </div>
+          <select
+            className="select select-bordered select-sm"
+            onChange={handleSelectYear}
+            value={appContext?.year ?? ""}
+          >
+            {years.map((year) => {
+              return (
+                <option value={year} key={year}>
+                  {year}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            if (appContext?.theme === "light") {
+              appContext?.setTheme("dark");
+            } else {
+              appContext?.setTheme("light");
+            }
+          }}
         >
-          {years.map((year) => {
-            return (
-              <option value={year} key={year}>
-                {year}
-              </option>
-            );
-          })}
-        </select>
-        <p>The selected year is: {appContext?.year}</p>
-      </label>
+          Switch theme
+        </button>
+      </div>
     </header>
   );
 };

@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import themes from "daisyui/src/theming/themes";
-themes.dark["base-200"] = "#333";
+themes.dark["base-200"] = "#444";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
@@ -12,6 +12,7 @@ export default {
       {
         dark: { ...themes.dark },
       },
+      "light",
     ],
   },
 };

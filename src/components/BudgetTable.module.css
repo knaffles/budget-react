@@ -5,9 +5,17 @@
   tbody,
   tfoot {
     > tr {
-      display: grid;
-      grid-template-columns: minmax(15rem, 1fr) repeat(auto-fit, minmax(0, 1fr));
-      grid-gap: 1rem;
+      > td:first-child,
+      > th:first-child {
+        width: 12rem;
+        min-width: 12rem;
+      }
+
+      > td:last-child,
+      > th:last-child {
+        width: 6rem;
+        min-width: 6rem;
+      }
     }
   }
 }
