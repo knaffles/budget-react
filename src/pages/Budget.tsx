@@ -1,31 +1,36 @@
-import { collection, getDocs, query, where } from "firebase/firestore";
+// TODO: Move data fetching to a hook.
+// TODO: Add additional error handling.
+
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
-import BudgetModel from "../models/BudgetModel";
+import { BudgetTable, BudgetDiff } from "../components/BudgetTable";
+import BudgetModel, { IBudgetRowEntry, ITotals } from "../models/BudgetModel";
 import CategoryModel from "../models/CategoryModel";
 import { db } from "../services/firebase";
-import { ICategory } from "../types/Category";
 import { IBudget } from "../types/Budget";
-import { IBudgetRowEntry } from "../models/BudgetModel";
+import { ICategory } from "../types/Category";
 
 const Budget = () => {
   const appContext = useContext(AppContext);
-  const [budget, setBudget] = useState<IBudgetRowEntry[]>([]);
-  const [model, setModel] = useState({} as BudgetModel);
+  const [budgetExpenses, setBudgetExpenses] = useState<IBudgetRowEntry[]>([]);
+  const [budgetIncome, setBudgetIncome] = useState<IBudgetRowEntry[]>([]);
+  const [totalExpenses, setTotalExpenses] = useState({} as ITotals);
+  const [totalIncome, setTotalIncome] = useState({} as ITotals);
+  const [budgetDiff, setBudgetDiff] = useState({} as ITotals);
+  const [categoryModel, setCategoryModel] = useState({} as CategoryModel);
+  const [loadingCategories, setLoadingCategories] = useState(true);
 
+  // Get Categories.
   useEffect(() => {
     const fetchData = async () => {
-      const qBudget = query(
-        collection(db, `user/${appContext?.user}/budget`),
-        where("year", "==", appContext?.year)
-      );
-      const querySnapshotBudget = await getDocs(qBudget);
-      const budgetResult = querySnapshotBudget.docs.map((doc) => {
-        const result = doc.data() as IBudget;
-        result.nodeId = doc.id;
-        return result;
-      });
-
+      setLoadingCategories(true);
       const qCategories = query(
         collection(db, `user/${appContext?.user}/category`)
       );
@@ -38,25 +43,81 @@ const Budget = () => {
 
       // TODO: Fix default value of appcontext?,year
       const categoriesModel = new CategoryModel(categoriesResult);
-      const budgetModel = new BudgetModel(
-        categoriesModel,
-        budgetResult,
-        appContext?.year ?? 0
-      );
-      budgetModel.buildBudgetData();
-      setBudget(budgetModel.budgetExpenses);
-      setModel(budgetModel);
+      setCategoryModel(categoriesModel);
+      setLoadingCategories(false);
     };
 
     fetchData();
-  }, [appContext?.user, appContext?.year]);
+  }, [appContext?.user]);
+
+  useEffect(() => {
+    if (loadingCategories) {
+      return;
+    }
+
+    // Create the budget model with empty data for now.
+    const budgetModel = new BudgetModel(
+      categoryModel,
+      [],
+      appContext?.year ?? 0
+    );
+
+    const qBudget = query(
+      collection(db, `user/${appContext?.user}/budget`),
+      where("year", "==", appContext?.year)
+    );
+
+    const unsubscribe = onSnapshot(
+      qBudget,
+      (querySnapshot) => {
+        const budgetResult = querySnapshot.docs.map((doc) => {
+          const result = doc.data() as IBudget;
+          result.nodeId = doc.id;
+          return result;
+        });
+        budgetModel.rows = budgetResult; // TODO: Use a setter here?
+        budgetModel.buildBudgetData();
+
+        setBudgetExpenses(budgetModel.budgetExpenses);
+        setBudgetIncome(budgetModel.budgetIncome);
+        setTotalExpenses(budgetModel.totalExpenses);
+        setTotalIncome(budgetModel.totalIncome);
+        setBudgetDiff(budgetModel.budgetDiff);
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+
+    return unsubscribe;
+  }, [appContext?.user, appContext?.year, categoryModel, loadingCategories]);
 
   return (
     <>
       <h1>Budget</h1>
-      <p>This is the Budget page.</p>
-      <p>Budget Rows: {model.rows?.length}</p>
-      {JSON.stringify(budget)}
+
+      {budgetExpenses.length > 0 && (
+        <BudgetTable
+          label="Expenses"
+          data={budgetExpenses}
+          totals={totalExpenses}
+          firstColLabel="Category"
+        />
+      )}
+
+      {budgetIncome.length > 0 && (
+        <BudgetTable
+          label="Income"
+          data={budgetIncome}
+          totals={totalIncome}
+          firstColLabel="Category"
+        />
+      )}
+
+      {/* TODO: Fix this conditional. Should be checking to see if budgetDiff is populated. */}
+      {budgetExpenses.length && budgetIncome.length && (
+        <BudgetDiff label="Income - Expenses" data={budgetDiff} />
+      )}
     </>
   );
 };

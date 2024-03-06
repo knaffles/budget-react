@@ -18,3 +18,7 @@ export const sort = (dataSet, sortColumn) => {
 
   return result;
 };
+
+export const roundTwoDigits = (aNumber: number) => {
+  return new Number(aNumber).toFixed(2);
+};

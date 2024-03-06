@@ -1,0 +1,17 @@
+.budget-table {
+  margin-bottom: 4rem;
+
+  thead,
+  tbody,
+  tfoot {
+    > tr {
+      display: grid;
+      grid-template-columns: minmax(15rem, 1fr) repeat(auto-fit, minmax(0, 1fr));
+      grid-gap: 1rem;
+    }
+  }
+}
+
+.negative {
+  color: red;
+}

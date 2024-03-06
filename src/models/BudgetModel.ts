@@ -38,13 +38,17 @@ export interface IBudgetRowEntry extends IMonths, INodeIds {
   displayCategory: string;
 }
 
+export interface ITotals extends IMonths {
+  total: number;
+}
+
 export interface IBudgetModel {
   categoryModel: ICategoryModel;
   rows: IBudget[];
   thisYear: number;
   budgetExpenses: IBudgetRowEntry[];
   budgetIncome: IBudgetRowEntry[];
-  budgetDiff: IDiff;
+  budgetDiff: ITotals;
   totalExpenses: ITotals;
   totalIncome: ITotals;
   buildBudgetData(): void;
@@ -56,21 +60,13 @@ export interface IBudgetModel {
   getNodeId(category: string, month: number, year: number): void;
 }
 
-export interface ITotals extends IMonths {
-  total: number;
-}
-
-export interface IDiff extends IMonths {
-  yearTotal: number;
-}
-
 class BudgetModel implements IBudgetModel {
   categoryModel: ICategoryModel;
   rows: IBudget[];
   thisYear: number;
   budgetExpenses: IBudgetRowEntry[] = [];
   budgetIncome: IBudgetRowEntry[] = [];
-  budgetDiff = {} as IDiff;
+  budgetDiff = {} as ITotals;
   totalExpenses = {} as ITotals;
   totalIncome = {} as ITotals;
 
@@ -88,7 +84,7 @@ class BudgetModel implements IBudgetModel {
     // Set everything to empty.
     this.budgetExpenses = [];
     this.budgetIncome = [];
-    this.budgetDiff = {} as IDiff;
+    this.budgetDiff = {} as ITotals;
     this.totalExpenses = {} as ITotals;
     this.totalIncome = {} as ITotals;
 
@@ -160,8 +156,7 @@ class BudgetModel implements IBudgetModel {
         this.totalExpenses[("month" + month) as keyof IMonths];
     }
 
-    this.budgetDiff.yearTotal =
-      this.totalIncome.total - this.totalExpenses.total;
+    this.budgetDiff.total = this.totalIncome.total - this.totalExpenses.total;
 
     console.log("built budget model");
   }
