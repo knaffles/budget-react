@@ -1,14 +1,20 @@
 import { FC } from "react";
-import { IBudgetRowEntry, ITotals } from "../models/BudgetModel";
-import { IMonths } from "../models/BudgetModel";
-import styles from "./BudgetTable.module.css";
+import {
+  IBudgetRowEntry,
+  IMonths,
+  INodeIds,
+  ITotals,
+} from "../models/BudgetModel";
 import { roundTwoDigits } from "../models/utils";
+import { IBudget } from "../types/Budget";
+import styles from "./BudgetTable.module.css";
 
 export interface IBudgetTable {
   label: string;
   data: IBudgetRowEntry[];
   totals: ITotals;
   firstColLabel?: string;
+  onCellClick(nodeId: IBudget["nodeId"], initialValue: IBudget["amount"]): void;
 }
 
 export interface IBudgetDiff {
@@ -32,6 +38,7 @@ export const BudgetTable: FC<IBudgetTable> = ({
   data,
   totals,
   firstColLabel = "",
+  onCellClick,
 }) => {
   const monthsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
@@ -64,7 +71,15 @@ export const BudgetTable: FC<IBudgetTable> = ({
                 <tr key={category.category}>
                   <td>{category.displayCategory}</td>
                   {monthsArray.map((month) => (
-                    <td key={month}>
+                    <td
+                      key={month}
+                      onClick={() =>
+                        onCellClick(
+                          category[`nodeId${month}` as keyof INodeIds],
+                          category[`month${month}` as keyof IMonths]
+                        )
+                      }
+                    >
                       <FormattedData
                         data={category[("month" + month) as keyof IMonths]}
                       />

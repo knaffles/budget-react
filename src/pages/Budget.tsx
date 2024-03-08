@@ -7,6 +7,8 @@ import {
   onSnapshot,
   query,
   where,
+  doc,
+  updateDoc,
 } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
@@ -16,6 +18,7 @@ import CategoryModel from "../models/CategoryModel";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
 import { ICategory } from "../types/Category";
+import Modal from "../components/Modal";
 
 const Budget = () => {
   const appContext = useContext(AppContext);
@@ -26,6 +29,28 @@ const Budget = () => {
   const [budgetDiff, setBudgetDiff] = useState({} as ITotals);
   const [categoryModel, setCategoryModel] = useState({} as CategoryModel);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [modalInitialValue, setModalInitialValue] = useState<number>(0);
+  const [modalNodeId, setModalNodeId] = useState<string>("");
+
+  const handleCellClick = (
+    nodeId: IBudget["nodeId"],
+    initialValue: IBudget["amount"]
+  ) => {
+    setShowModal(true);
+    setModalNodeId(nodeId);
+    setModalInitialValue(initialValue);
+  };
+
+  const handleCellUpdate = async (budgetValue: IBudget["amount"]) => {
+    // TODO - Check to see if nodeId exists...if not, create a new budget entry first.
+    try {
+      const docRef = doc(db, `user/${appContext?.user}/budget/${modalNodeId}`);
+      await updateDoc(docRef, { amount: budgetValue });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Get Categories.
   useEffect(() => {
@@ -102,6 +127,7 @@ const Budget = () => {
           data={budgetExpenses}
           totals={totalExpenses}
           firstColLabel="Category"
+          onCellClick={handleCellClick}
         />
       )}
 
@@ -111,6 +137,7 @@ const Budget = () => {
           data={budgetIncome}
           totals={totalIncome}
           firstColLabel="Category"
+          onCellClick={handleCellClick}
         />
       )}
 
@@ -118,6 +145,17 @@ const Budget = () => {
       {budgetExpenses.length && budgetIncome.length && (
         <BudgetDiff label="Income - Expenses" data={budgetDiff} />
       )}
+
+      {
+        <Modal
+          handleUpdate={handleCellUpdate}
+          showModal={showModal}
+          initialValue={modalInitialValue}
+          handleClose={() => {
+            setShowModal(false);
+          }}
+        />
+      }
     </>
   );
 };
