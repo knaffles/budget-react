@@ -1,11 +1,10 @@
 import { FC, useEffect, useRef, useState } from "react";
-import { IBudget } from "../types/Budget";
 
 export interface IModal {
-  handleUpdate(value: IBudget["amount"]): void | Promise<void>;
+  handleUpdate(value: number): void | Promise<void>;
   showModal: boolean;
   handleClose(): void;
-  initialValue: IBudget["amount"];
+  initialValue: number;
 }
 
 const Modal: FC<IModal> = ({

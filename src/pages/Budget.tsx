@@ -33,16 +33,13 @@ const Budget = () => {
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");
 
-  const handleCellClick = (
-    nodeId: IBudget["nodeId"],
-    initialValue: IBudget["amount"]
-  ) => {
+  const handleCellClick = (nodeId: IBudget["nodeId"], initialValue: number) => {
     setShowModal(true);
     setModalNodeId(nodeId);
     setModalInitialValue(initialValue);
   };
 
-  const handleCellUpdate = async (budgetValue: IBudget["amount"]) => {
+  const handleCellUpdate = async (budgetValue: number) => {
     // TODO - Check to see if nodeId exists...if not, create a new budget entry first.
     try {
       const docRef = doc(db, `user/${appContext?.user}/budget/${modalNodeId}`);

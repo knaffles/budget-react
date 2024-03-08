@@ -1,44 +1,31 @@
 {
-  "Auto%20Insurance102017": {
-    "amount": 85,
-    "category": "Auto Insurance",
-    "month": 10,
-    "year": 2017
-  },
-  "Auto%20Insurance102018": {
-    "amount": 92.25,
-    "category": "Auto Insurance",
-    "month": 10,
-    "year": 2018
-  },
-  "Auto%20Insurance102019": {
-    "amount": 101,
-    "category": "Auto Insurance",
-    "month": 10,
-    "year": 2019
-  },
-  "Weekend%20Activities92020": {
-    "amount": 0,
-    "category": "Weekend Activities",
-    "month": 9,
-    "year": 2020
-  },
-  "Weekend%20Activities92021": {
-    "amount": 0,
-    "category": "Weekend Activities",
-    "month": 9,
-    "year": 2021
-  },
-  "Weekend%20Activities92022": {
-    "amount": 0,
-    "category": "Weekend Activities",
-    "month": 9,
-    "year": 2022
-  },
-  "Weekend%20Activities92023": {
-    "amount": 0,
-    "category": "Weekend Activities",
-    "month": 9,
-    "year": 2023
-  }
+  "budget": [
+    {
+      "category": "Shopping",
+      "year": 2024,
+      "amount": [90, 100, 120, 250, 90, 100, 120, 250, 90, 100, 120, 250]
+    },
+    {
+      "category": "Entertainment",
+      "year": 2024,
+      "amount": [100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111]
+    },
+    {
+      "category": "Food & Dining:Restaurants",
+      "year": 2024,
+      "amount": [250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250, 250]
+    },
+    {
+      "category": "Vacation",
+      "year": 2024,
+      "amount": [500, 500, 1000, 500, 500, 500, 500, 500, 500, 500, 500, 500]
+    },
+    {
+      "category": "Income:Paycheck",
+      "year": 2024,
+      "amount": [
+        4000, 4000, 4000, 4000, 2000, 0, 4000, 4000, 4000, 4000, 4000, 4000
+      ]
+    }
+  ]
 }

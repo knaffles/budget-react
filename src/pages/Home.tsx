@@ -1,13 +1,13 @@
 import budgetObject from "../../data/budget.json";
-import { setDoc, doc } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 import { db } from "../services/firebase";
 
 const Home = () => {
-  const handleClick = async () => {
-    for (const [key, value] of Object.entries(budgetObject)) {
-      console.log(`key: ${key}, value: ${value}`);
-      await setDoc(doc(db, "user/user1/budget", key), value);
-    }
+  const handleClick = () => {
+    const budget = budgetObject.budget;
+    budget.forEach(async (value) => {
+      await addDoc(collection(db, "user/user1/budget"), value);
+    });
   };
 
   return (

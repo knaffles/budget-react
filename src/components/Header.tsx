@@ -28,6 +28,9 @@ const Header = () => {
               <Link to="/budget">Budget</Link>
             </li>
             <li>
+              <Link to="/expenses">Expenses</Link>
+            </li>
+            <li>
               <Link to="/nothing-here">Nothing Here</Link>
             </li>
           </ul>

@@ -32,13 +32,16 @@ export interface INodeIds {
   nodeId12: string;
 }
 
-export interface IBudgetRowEntry extends IMonths, INodeIds {
+export interface IBudgetRowEntry {
   category: string;
+  nodeId: string;
   total: number;
   displayCategory: string;
+  amount: number[];
 }
 
-export interface ITotals extends IMonths {
+export interface ITotals {
+  amount: number[];
   total: number;
 }
 
@@ -84,18 +87,16 @@ class BudgetModel implements IBudgetModel {
     // Set everything to empty.
     this.budgetExpenses = [];
     this.budgetIncome = [];
-    this.budgetDiff = {} as ITotals;
-    this.totalExpenses = {} as ITotals;
-    this.totalIncome = {} as ITotals;
+    this.budgetDiff = { amount: [], total: 0 };
+    this.totalExpenses = { amount: [], total: 0 };
+    this.totalIncome = { amount: [], total: 0 };
 
     // TODO: Move this to an init function, probably.
     const categories = this.getCategoryList(this.thisYear);
 
     // Initialize totals
-    for (let month = 1; month <= 12; month++) {
-      this.totalExpenses[("month" + month) as keyof IMonths] = this.totalIncome[
-        ("month" + month) as keyof IMonths
-      ] = 0;
+    for (let month = 0; month <= 11; month++) {
+      this.totalExpenses.amount[month] = this.totalIncome.amount[month] = 0;
     }
     this.totalExpenses.total = this.totalIncome.total = 0;
 
@@ -105,29 +106,27 @@ class BudgetModel implements IBudgetModel {
       // Income or expense?
       const catType = this.categoryModel.getType(categories[i]);
 
+      entry.amount = [];
       entry.category = categories[i];
       entry.total = 0;
       entry.displayCategory = categories[i];
+      const nodeId = this.getNodeId(categories[i], this.thisYear) ?? "";
 
-      for (let month = 1; month <= 12; month++) {
+      for (let month = 0; month <= 11; month++) {
         // Get the nodeId
-        const nodeId =
-          this.getNodeId(categories[i], month, this.thisYear) ?? "";
 
-        entry[("month" + month) as keyof IMonths] = this.getCategory(
+        entry.amount[month] = this.getCategory(
           categories[i],
           month,
           this.thisYear
         );
-        entry.total += entry[("month" + month) as keyof IMonths];
-        entry[("nodeId" + month) as keyof INodeIds] = nodeId;
+        entry.total += entry.amount[month];
+        entry.nodeId = nodeId;
 
         if (catType == "Income") {
-          this.totalIncome[("month" + month) as keyof IMonths] +=
-            entry[("month" + month) as keyof IMonths];
+          this.totalIncome.amount[month] += entry.amount[month];
         } else if (catType == "Expense") {
-          this.totalExpenses[("month" + month) as keyof IMonths] +=
-            entry[("month" + month) as keyof IMonths];
+          this.totalExpenses.amount[month] += entry.amount[month];
         }
       }
 
@@ -136,24 +135,22 @@ class BudgetModel implements IBudgetModel {
       } else if (catType == "Expense") {
         this.budgetExpenses.push(entry);
       }
+      console.log(catType);
     }
 
     // Calculate totals for entire year.
-    for (let month = 1; month <= 12; month++) {
-      this.totalExpenses.total +=
-        this.totalExpenses[("month" + month) as keyof IMonths];
-      this.totalIncome.total +=
-        this.totalIncome[("month" + month) as keyof IMonths];
+    for (let month = 0; month <= 11; month++) {
+      this.totalExpenses.total += this.totalExpenses.amount[month];
+      this.totalIncome.total += this.totalIncome.amount[month];
     }
 
     this.budgetExpenses = sort(this.budgetExpenses, "displayCategory");
     this.budgetIncome = sort(this.budgetIncome, "displayCategory");
 
     // Calculate Income - Expenses
-    for (let month = 1; month <= 12; month++) {
-      this.budgetDiff[("month" + month) as keyof IMonths] =
-        this.totalIncome[("month" + month) as keyof IMonths] -
-        this.totalExpenses[("month" + month) as keyof IMonths];
+    for (let month = 0; month <= 11; month++) {
+      this.budgetDiff.amount[month] =
+        this.totalIncome.amount[month] - this.totalExpenses.amount[month];
     }
 
     this.budgetDiff.total = this.totalIncome.total - this.totalExpenses.total;
@@ -201,15 +198,11 @@ class BudgetModel implements IBudgetModel {
   // Get the budget amount for a category/month/year.
   getCategory(category: string, month: number, year: number) {
     const budgetAmount = this.rows.find(function (element) {
-      return (
-        element.category === category &&
-        element.month === month &&
-        element.year === year
-      );
+      return element.category === category && element.year === year;
     });
 
     if (budgetAmount) {
-      return budgetAmount.amount;
+      return budgetAmount.amount[month];
     } else {
       return 0;
     }
@@ -217,28 +210,31 @@ class BudgetModel implements IBudgetModel {
 
   // Get the YTD budget for a category/month/year
   getCategoryYTD(category: string, month: number, year: number) {
-    const budgetYTD = this.rows.reduce(function (sum, element) {
-      if (
-        element.category === category &&
-        element.month <= month &&
-        element.year === year
-      ) {
-        return sum + element.amount;
+    const categoryBudget = this.rows.find(function (element) {
+      return element.category === category && element.year === year;
+    });
+
+    if (!categoryBudget) return 0;
+
+    const budgetYTD = categoryBudget.amount.reduce(function (
+      sum,
+      element,
+      index
+    ) {
+      if (index <= month) {
+        return sum + element;
       } else {
         return sum;
       }
-    }, 0);
+    },
+    0);
 
     return budgetYTD;
   }
 
-  getNodeId(category: string, month: number, year: number) {
+  getNodeId(category: string, year: number) {
     const nodeId = this.rows.find(function (element) {
-      return (
-        element.category === category &&
-        element.month === month &&
-        element.year === year
-      );
+      return element.category === category && element.year === year;
     });
 
     if (nodeId) {

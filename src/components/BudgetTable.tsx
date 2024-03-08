@@ -1,10 +1,5 @@
 import { FC } from "react";
-import {
-  IBudgetRowEntry,
-  IMonths,
-  INodeIds,
-  ITotals,
-} from "../models/BudgetModel";
+import { IBudgetRowEntry, ITotals } from "../models/BudgetModel";
 import { roundTwoDigits } from "../models/utils";
 import { IBudget } from "../types/Budget";
 import styles from "./BudgetTable.module.css";
@@ -14,7 +9,7 @@ export interface IBudgetTable {
   data: IBudgetRowEntry[];
   totals: ITotals;
   firstColLabel?: string;
-  onCellClick(nodeId: IBudget["nodeId"], initialValue: IBudget["amount"]): void;
+  onCellClick(nodeId: IBudget["nodeId"], initialValue: number): void;
 }
 
 export interface IBudgetDiff {
@@ -40,7 +35,7 @@ export const BudgetTable: FC<IBudgetTable> = ({
   firstColLabel = "",
   onCellClick,
 }) => {
-  const monthsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   return (
     <div className="overflow-x-auto">
@@ -74,15 +69,10 @@ export const BudgetTable: FC<IBudgetTable> = ({
                     <td
                       key={month}
                       onClick={() =>
-                        onCellClick(
-                          category[`nodeId${month}` as keyof INodeIds],
-                          category[`month${month}` as keyof IMonths]
-                        )
+                        onCellClick(category.nodeId, category.amount[month])
                       }
                     >
-                      <FormattedData
-                        data={category[("month" + month) as keyof IMonths]}
-                      />
+                      <FormattedData data={category.amount[month]} />
                     </td>
                   ))}
                   <td>
@@ -98,9 +88,7 @@ export const BudgetTable: FC<IBudgetTable> = ({
             <td>TOTALS</td>
             {monthsArray.map((month) => (
               <td key={month}>
-                <FormattedData
-                  data={totals[("month" + month) as keyof IMonths]}
-                />
+                <FormattedData data={totals.amount[month]} />
               </td>
             ))}
             <td>
@@ -143,9 +131,7 @@ export const BudgetDiff: FC<IBudgetDiff> = ({ label, data }) => {
             <td></td>
             {monthsArray.map((month) => (
               <td key={month}>
-                <FormattedData
-                  data={data[("month" + month) as keyof IMonths]}
-                />
+                <FormattedData data={data.amount[month]} />
               </td>
             ))}
             <td>

@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
 import Budget from "./pages/Budget";
+import Expenses from "./pages/Expenses";
 import Home from "./pages/Home";
 import NoMatch from "./pages/NoMatch";
 import { AppContextType } from "./types/types.global";
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="budget" element={<Budget />} />
+              <Route path="expenses" element={<Expenses />} />
 
               {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
