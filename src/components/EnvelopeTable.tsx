@@ -2,14 +2,13 @@ import { FC } from "react";
 import { roundTwoDigits } from "../models/utils";
 import styles from "./BudgetTable.module.css";
 import {
-  ITransactionsTotals,
-  ITransactionsRow,
+  ITransactionsEnvelopeRow,
+  ITransactionsEnvelopeTotals,
 } from "../models/TransactionsModel";
 
-export interface ITransactionsTable {
-  label: string;
-  data: ITransactionsRow[];
-  totals: ITransactionsTotals;
+export interface IEnvelopeTable {
+  data: ITransactionsEnvelopeRow[];
+  totals: ITransactionsEnvelopeTotals;
 }
 
 const FormattedData = ({ data }: { data: number }) => {
@@ -23,24 +22,18 @@ const FormattedData = ({ data }: { data: number }) => {
   );
 };
 
-export const TransactionsTable: FC<ITransactionsTable> = ({
-  label,
-  data,
-  totals,
-}) => {
+export const EnvelopeTable: FC<IEnvelopeTable> = ({ data, totals }) => {
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["budget-table"]}`}>
-        <caption className="text-left">{label}</caption>
+        <caption className="text-left">Envelope Expenses</caption>
         <thead>
           <tr>
             <th>Category</th>
-            <th>Budget</th>
-            <th>Actual</th>
-            <th>Difference</th>
-            <th>Budget YTD</th>
+            <th>Annual Budget</th>
             <th>Actual YTD</th>
-            <th>Difference YTD</th>
+            <th>Remaining</th>
+            <th>Overage</th>
           </tr>
         </thead>
         <tbody>
@@ -51,22 +44,16 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
                   {/* <td>{buildCategoryLink(item.category, 1, 2024)}</td> */}
                   <td>{item.category}</td>
                   <td>
-                    <FormattedData data={item.budget} />{" "}
+                    <FormattedData data={item.budget} />
                   </td>
                   <td>
-                    <FormattedData data={item.actual} />{" "}
+                    <FormattedData data={item.YTD} />
                   </td>
                   <td>
-                    <FormattedData data={item.difference} />{" "}
+                    <FormattedData data={item.remaining} />
                   </td>
                   <td>
-                    <FormattedData data={item.budgetYTD} />{" "}
-                  </td>
-                  <td>
-                    <FormattedData data={item.YTD} />{" "}
-                  </td>
-                  <td>
-                    <FormattedData data={item.differenceYTD} />{" "}
+                    <FormattedData data={item.overage} />
                   </td>
                 </tr>
               );
@@ -77,22 +64,16 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
           <tr className="font-bold">
             <td>TOTAL</td>
             <td>
-              <FormattedData data={totals.budget} />{" "}
+              <FormattedData data={totals.budget} />
             </td>
             <td>
-              <FormattedData data={totals.actual} />{" "}
+              <FormattedData data={totals.YTD} />
             </td>
             <td>
-              <FormattedData data={totals.difference} />{" "}
+              <FormattedData data={totals.remaining} />
             </td>
             <td>
-              <FormattedData data={totals.budgetYTD} />{" "}
-            </td>
-            <td>
-              <FormattedData data={totals.YTD} />{" "}
-            </td>
-            <td>
-              <FormattedData data={totals.differenceYTD} />{" "}
+              <FormattedData data={totals.overage} />
             </td>
           </tr>
         </tfoot>

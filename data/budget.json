@@ -31,6 +31,28 @@
   "transaction": [
     {
       "account": "Visa",
+      "amount": 1000,
+      "category": "Vacation",
+      "postedOn": "1/08/2024",
+      "check": "",
+      "payee": "United",
+      "notes": "",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Visa",
+      "amount": 500,
+      "category": "Vacation",
+      "postedOn": "2/08/2024",
+      "check": "",
+      "payee": "United",
+      "notes": "",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Visa",
       "amount": 73.43,
       "category": "Shopping",
       "postedOn": "1/06/2024",

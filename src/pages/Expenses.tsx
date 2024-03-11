@@ -1,13 +1,18 @@
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
+import { EnvelopeTable } from "../components/EnvelopeTable";
+import { OverUnderTable } from "../components/OverUnderTable";
+import { TransactionsTable } from "../components/TransactionsTable";
 import TransactionsModel, {
-  ITransactationsTotals,
+  ITransactionsEnvelopeRow,
+  ITransactionsEnvelopeTotals,
+  ITransactionsOverUnder,
   ITransactionsRow,
+  ITransactionsTotals,
 } from "../models/TransactionsModel";
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
-import { TransactionsTable } from "../components/TransactionsTable";
 
 const months = [
   "January",
@@ -29,10 +34,15 @@ const Expenses = () => {
   const [month, setMonth] = useState<number>(0);
   const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
   const [income, setIncome] = useState<ITransactionsRow[]>([]);
-  const [totalExpenses, setTotalExpenses] = useState(
-    {} as ITransactationsTotals
+  const [totalExpenses, setTotalExpenses] = useState({} as ITransactionsTotals);
+  const [totalIncome, setTotalIncome] = useState({} as ITransactionsTotals);
+  const [envelopeExpenses, setEnvelopeExpenses] = useState<
+    ITransactionsEnvelopeRow[]
+  >([]);
+  const [envelopeTotals, setEnvelopeTotals] = useState(
+    {} as ITransactionsEnvelopeTotals
   );
-  const [totalIncome, setTotalIncome] = useState({} as ITransactationsTotals);
+  const [overUnder, setOverUnder] = useState({} as ITransactionsOverUnder);
 
   useEffect(() => {
     if (!appContext || appContext?.loadingCategories) {
@@ -66,6 +76,12 @@ const Expenses = () => {
         setIncome(transactionsModel.finalIncome);
         setTotalExpenses(transactionsModel.totalExpenses);
         setTotalIncome(transactionsModel.totalIncome);
+        setEnvelopeExpenses(transactionsModel.finalEnvelope);
+        setEnvelopeTotals(transactionsModel.totalEnvelope);
+
+        // Calculate over/under totals.
+        transactionsModel.calculateOverUnder();
+        setOverUnder(transactionsModel.overUnder);
       },
       (error) => {
         console.log(error);
@@ -107,6 +123,8 @@ const Expenses = () => {
         label="Expenses"
       />
       <TransactionsTable data={income} totals={totalIncome} label="Income" />
+      <EnvelopeTable data={envelopeExpenses} totals={envelopeTotals} />
+      <OverUnderTable data={overUnder} />
     </>
   );
 };
