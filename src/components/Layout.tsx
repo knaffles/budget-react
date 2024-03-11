@@ -5,6 +5,7 @@ const Layout = () => {
   return (
     <>
       <Header />
+      <hr className="my-4" />
       <Outlet />
     </>
   );

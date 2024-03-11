@@ -1,12 +1,38 @@
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
-import TransactionsModel from "../models/TransactionsModel";
+import TransactionsModel, {
+  ITransactationsTotals,
+  ITransactionsRow,
+} from "../models/TransactionsModel";
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
+import { TransactionsTable } from "../components/TransactionsTable";
+
+const months = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 const Expenses = () => {
   const appContext = useContext(AppContext);
+  const [month, setMonth] = useState<number>(0);
+  const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
+  const [income, setIncome] = useState<ITransactionsRow[]>([]);
+  const [totalExpenses, setTotalExpenses] = useState(
+    {} as ITransactationsTotals
+  );
+  const [totalIncome, setTotalIncome] = useState({} as ITransactationsTotals);
 
   useEffect(() => {
     if (!appContext || appContext?.loadingCategories) {
@@ -21,8 +47,6 @@ const Expenses = () => {
       []
     );
 
-    console.log(transactionsModel.rows.length);
-
     const qBudget = query(
       collection(db, `user/${appContext?.user}/transaction`)
     );
@@ -36,7 +60,12 @@ const Expenses = () => {
           return result;
         });
         transactionsModel.rows = transactionsResult;
-        console.log(transactionsModel.rows);
+
+        transactionsModel.filterToMonth(month, 2024); // TODO: Hardcoded month and year.
+        setExpenses(transactionsModel.finalExpenses);
+        setIncome(transactionsModel.finalIncome);
+        setTotalExpenses(transactionsModel.totalExpenses);
+        setTotalIncome(transactionsModel.totalIncome);
       },
       (error) => {
         console.log(error);
@@ -44,16 +73,42 @@ const Expenses = () => {
     );
 
     return unsubscribe;
-  }, [
-    appContext,
-    appContext?.user, // TODO: All these possibly null values don't seem right.
-    appContext?.year,
-    appContext?.loadingCategories,
-    appContext?.categoryModel,
-    appContext?.loadingCategories,
-  ]);
+  }, [appContext, month]);
 
-  return <h1>Expenses</h1>;
+  return (
+    <>
+      <h1>Expenses & Income</h1>
+
+      <label className="flex items-center my-4">
+        <div className="label">
+          <span className="label-text">Select the month:</span>
+        </div>
+        <select
+          className="select select-bordered select-sm"
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+            console.log(event.target.value);
+            setMonth(parseInt(event.target.value));
+          }}
+          value={month}
+        >
+          {months.map((value, index) => {
+            return (
+              <option value={index} key={index}>
+                {value}
+              </option>
+            );
+          })}
+        </select>
+      </label>
+
+      <TransactionsTable
+        data={expenses}
+        totals={totalExpenses}
+        label="Expenses"
+      />
+      <TransactionsTable data={income} totals={totalIncome} label="Income" />
+    </>
+  );
 };
 
 export default Expenses;

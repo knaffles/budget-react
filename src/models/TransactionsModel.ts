@@ -4,10 +4,44 @@ import { ITransaction } from "../types/Transaction";
 import { sort } from "./utils";
 import { IBudgetModel } from "./BudgetModel";
 
+export interface ITransactionsRow {
+  fullCategory: string;
+  category: string;
+  actual: number;
+  budget: number;
+  difference: number;
+  YTD: number;
+  budgetYTD: number;
+  differenceYTD: number;
+}
+
+export interface ITransactionsEnvelopeRow {
+  fullCategory: string;
+  category: string;
+  YTD: number;
+  budget: number;
+  remaining: number;
+  overage: number;
+}
+
+export interface ITransactationsTotals {
+  budget: number;
+  actual: number;
+  difference: number;
+  YTD: number;
+  budgetYTD: number;
+  differenceYTD: number;
+}
+
 export interface ITransactionsModel {
   budgetModel: IBudgetModel;
   categoryModel: ICategoryModel;
   rows: ITransaction[];
+  finalExpenses: ITransactionsRow[];
+  finalIncome: ITransactionsRow[];
+  finalEnvelope: ITransactionsEnvelopeRow[];
+  totalExpenses: ITransactationsTotals;
+  totalIncome: ITransactationsTotals;
   cleanData(): void;
   getUniqueCategories(month: number, year: number): void;
   getTransactionsInMonthYear(
@@ -16,14 +50,19 @@ export interface ITransactionsModel {
     year: number
   ): void;
   getTransactionsYTD(category: string, month: number, year: number): void;
-  getSum(dataSet: any): void;
-  filterToMonth(filters: any): void;
+  getSum(dataSet: ITransaction[]): void;
+  filterToMonth(budgetMonth: number, budgetYear: number): void;
 }
 
 class TransactionsModel implements ITransactionsModel {
   budgetModel: IBudgetModel;
   categoryModel: ICategoryModel;
   rows: ITransaction[];
+  finalExpenses: ITransactionsRow[];
+  finalIncome: ITransactionsRow[];
+  finalEnvelope: ITransactionsEnvelopeRow[];
+  totalExpenses: ITransactationsTotals;
+  totalIncome: ITransactationsTotals;
 
   constructor(
     budgetModel: IBudgetModel,
@@ -33,6 +72,11 @@ class TransactionsModel implements ITransactionsModel {
     this.budgetModel = budgetModel;
     this.categoryModel = categoryModel;
     this.rows = rows;
+    this.finalExpenses = [];
+    this.finalIncome = [];
+    this.finalEnvelope = [];
+    this.totalExpenses = {} as ITransactationsTotals;
+    this.totalIncome = {} as ITransactationsTotals;
   }
 
   // Remove commas and convert amounts to floats.
@@ -73,10 +117,12 @@ class TransactionsModel implements ITransactionsModel {
   }
 
   getTransactionsInMonthYear(category: string, month: number, year: number) {
-    const dataSet = this.rows.filter(function (transaction) {
+    const dataSet = this.rows.filter((transaction) => {
       const transactionDate = new Date(Date.parse(transaction.postedOn));
       const thisMonth = transactionDate.getMonth(),
         thisYear = transactionDate.getFullYear();
+
+      console.log("thisMOnth: ", thisMonth);
 
       let categoryFamily = [category];
 
@@ -106,7 +152,7 @@ class TransactionsModel implements ITransactionsModel {
   }
 
   getTransactionsYTD(category: string, month: number, year: number) {
-    const dataSet = [];
+    let dataSet: ITransaction[] = [];
 
     for (let i = 1; i <= month; i++) {
       dataSet = dataSet.concat(
@@ -118,30 +164,16 @@ class TransactionsModel implements ITransactionsModel {
   }
 
   // TODO: Update so that the model doesn't need to have all data from all years at all times.
-  filterToMonth(
-    filters = [
-      { id: "budget__month", val: "1" },
-      { id: "budget__year", val: "2024" },
-    ]
-  ) {
-    let budgetMonth = 0,
-      budgetYear = 0,
+  filterToMonth(budgetMonth: number, budgetYear: number) {
+    const finalNoBudget = [],
       finalExpenses = [],
       finalIncome = [],
-      finalNoBudget = [], // All categories which are not budgeted.
-      finalEnvelope = []; // Envelope budgets.
-
-    for (const key in filters) {
-      if (filters[key].id == "budget__month") {
-        budgetMonth = parseInt(filters[key].val);
-      }
-      if (filters[key].id == "budget__year") {
-        budgetYear = parseInt(filters[key].val);
-      }
-    }
+      finalEnvelope = []; // All categories which are not budgeted.
 
     // Get the list of all categories for this budget year.
     const categories = this.budgetModel.getCategoryList(budgetYear);
+
+    // console.log("categories: ", categories);
 
     // For each category in the budget:
     for (let i = 0; i < categories.length; i++) {
@@ -160,7 +192,9 @@ class TransactionsModel implements ITransactionsModel {
         budgetMonth,
         budgetYear
       );
+      // console.log("actual: ", theCategory, catActual);
       let catActualAmount = this.getSum(catActual);
+      console.log("actualsum: ", theCategory, catActualAmount);
 
       // Get YTD budget up to this month/year
       const catBudgetYTD = this.budgetModel.getCategoryYTD(
@@ -233,7 +267,7 @@ class TransactionsModel implements ITransactionsModel {
         finalIncome.push({
           fullCategory: theFullCategory,
           category: theCategory,
-          sum: catActualAmount,
+          actual: catActualAmount,
           budget: catBudget,
           difference: -1 * catDiff,
           YTD: catActualYTDAmount,
@@ -245,7 +279,7 @@ class TransactionsModel implements ITransactionsModel {
         finalExpenses.push({
           fullCategory: theFullCategory,
           category: theCategory,
-          sum: catActualAmount,
+          actual: catActualAmount,
           budget: catBudget,
           difference: catDiff,
           YTD: catActualYTDAmount,
@@ -326,12 +360,12 @@ class TransactionsModel implements ITransactionsModel {
     }
 
     // Sort and then render.
-    finalExpenses = sort(finalExpenses, "fullCategory");
-    finalIncome = sort(finalIncome, "fullCategory");
-    finalEnvelope = sort(finalEnvelope, "fullCategory");
+    this.finalExpenses = sort(finalExpenses, "fullCategory");
+    this.finalIncome = sort(finalIncome, "fullCategory");
+    this.finalEnvelope = sort(finalEnvelope, "fullCategory");
+    this.totalExpenses = this.calculateTotals(finalExpenses);
+    this.totalIncome = this.calculateTotals(finalIncome);
 
-    // this.renderBudgetTable(finalExpenses, budgetMonth, budgetYear, "expenses");
-    // this.renderBudgetTable(finalIncome, budgetMonth, budgetYear, "income");
     // this.renderEnvelopeTable(finalEnvelope, budgetMonth, budgetYear);
     // this.renderNoBudgetTable(finalNoBudget, budgetMonth, budgetYear);
 
@@ -368,28 +402,42 @@ class TransactionsModel implements ITransactionsModel {
 
   // Get the sum of all Amount in a series of transactions.
   // TODO: Technically, doesn't need to be a method on this object.
-  getSum(dataSet: any) {
+  getSum(dataSet: ITransaction[]) {
     let sum = 0;
 
-    $(dataSet).each(function (key, val) {
-      const catType = this.categoryModel.getType(val["Category"]);
+    dataSet.forEach((item) => {
+      const catType = this.categoryModel.getType(item.category);
 
-      if (val["Transaction Type"] == "debit") {
-        if (catType == "Expense") {
-          sum += val.Amount;
-        } else if (catType == "Income") {
-          sum -= val.Amount;
-        }
-      } else {
-        if (catType == "Expense") {
-          sum -= val.Amount;
-        } else if (catType == "Income") {
-          sum += val.Amount;
-        }
+      if (catType == "Expense") {
+        sum += item.amount;
+      } else if (catType == "Income") {
+        sum -= item.amount;
       }
     });
 
     return sum;
+  }
+
+  calculateTotals(dataSet: ITransactionsRow[]) {
+    const total = {
+      budget: 0,
+      actual: 0,
+      difference: 0,
+      YTD: 0,
+      budgetYTD: 0,
+      differenceYTD: 0,
+    };
+
+    dataSet.forEach((item) => {
+      total.budget += item.budget;
+      total.actual += item.actual;
+      total.difference += item.difference;
+      total.YTD += item.YTD;
+      total.budgetYTD += item.budgetYTD;
+      total.differenceYTD += item.differenceYTD;
+    });
+
+    return total;
   }
 }
 

@@ -30,7 +30,7 @@
   ],
   "transaction": [
     {
-      "account": "Fidelity Visa",
+      "account": "Visa",
       "amount": 73.43,
       "category": "Shopping",
       "postedOn": "1/06/2024",
@@ -41,7 +41,7 @@
       "state": "cleared"
     },
     {
-      "account": "Fidelity Visa",
+      "account": "Visa",
       "amount": 50.0,
       "category": "Shopping",
       "postedOn": "1/08/2024",
@@ -52,7 +52,7 @@
       "state": "cleared"
     },
     {
-      "account": "Fidelity Visa",
+      "account": "Visa",
       "amount": -25.0,
       "category": "Food & Dining:Restaurants",
       "postedOn": "1/12/2024",
@@ -63,13 +63,35 @@
       "state": "cleared"
     },
     {
-      "account": "Fidelity Visa",
+      "account": "Visa",
       "amount": 75.0,
       "category": "Food & Dining:Restaurants",
       "postedOn": "1/11/2024",
       "check": "",
       "payee": "Pita Inn",
       "notes": "Refund",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Discover",
+      "amount": 25.05,
+      "category": "Food & Dining:Restaurants",
+      "postedOn": "1/11/2023",
+      "check": "",
+      "payee": "Bubba's",
+      "notes": "",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Visa",
+      "amount": 55.63,
+      "category": "Food & Dining:Restaurants",
+      "postedOn": "1/24/2023",
+      "check": "",
+      "payee": "Pub Grill",
+      "notes": "",
       "tags": "",
       "state": "cleared"
     }

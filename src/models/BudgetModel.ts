@@ -27,9 +27,9 @@ export interface IBudgetModel {
   buildBudgetData(): void;
   cleanData(): void;
   hasCategory(category: string, year: number): void;
-  getCategoryList(year: number): void;
-  getCategory(category: string, month: number, year: number): void;
-  getCategoryYTD(category: string, month: number, year: number): void;
+  getCategoryList(year: number): string[];
+  getCategory(category: string, month: number, year: number): number;
+  getCategoryYTD(category: string, month: number, year: number): number;
   getNodeId(category: string, month: number, year: number): void;
 }
 

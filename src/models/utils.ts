@@ -34,3 +34,29 @@ export const parseDate = (dateString: string) => {
 
   return result;
 };
+
+export const cleanMe = (aString: string) => {
+  return aString.toLowerCase().replace(/ /g, "").replace(/\//g, "");
+};
+
+export const buildCategoryLink = (
+  category: string,
+  month: number,
+  year: number
+) => {
+  const url = "/transactions/" + cleanMe(category) + "/" + month + "/" + year;
+  const urlYTD = url + "/ytd";
+  return (
+    '<a data-category="' +
+    category +
+    '" href="' +
+    url +
+    '" class="category-link">' +
+    category +
+    '</a> <a data-category="' +
+    category +
+    '" href="' +
+    urlYTD +
+    '" class="category-link">(YTD)</a>'
+  );
+};

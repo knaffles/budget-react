@@ -12,7 +12,7 @@ import { ICategory } from "../types/Category";
 export interface ICategoryModel {
   categories: ICategory[];
   getParent(category: string): string | null;
-  getChildren(category: string): void;
+  getChildren(category: string): string[];
   getType(category: string): string;
   isEnvelope(category: string): boolean;
 }
