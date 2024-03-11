@@ -10,6 +10,13 @@ const Home = () => {
     });
   };
 
+  const handleTransactionsClick = () => {
+    const transactions = budgetObject.transaction;
+    transactions.forEach(async (value) => {
+      await addDoc(collection(db, "user/user1/transaction"), value);
+    });
+  };
+
   return (
     <>
       <h1>Home</h1>
@@ -17,6 +24,12 @@ const Home = () => {
       <p>
         <button className="btn" onClick={handleClick}>
           Import budget data
+        </button>
+      </p>
+
+      <p>
+        <button className="btn" onClick={handleTransactionsClick}>
+          Import transactions data
         </button>
       </p>
     </>

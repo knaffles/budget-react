@@ -27,5 +27,51 @@
         4000, 4000, 4000, 4000, 2000, 0, 4000, 4000, 4000, 4000, 4000, 4000
       ]
     }
+  ],
+  "transaction": [
+    {
+      "account": "Fidelity Visa",
+      "amount": 73.43,
+      "category": "Shopping",
+      "postedOn": "1/06/2024",
+      "check": "",
+      "payee": "Amazon",
+      "notes": "Space heater",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Fidelity Visa",
+      "amount": 50.0,
+      "category": "Shopping",
+      "postedOn": "1/08/2024",
+      "check": "",
+      "payee": "Target",
+      "notes": "Clother",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Fidelity Visa",
+      "amount": -25.0,
+      "category": "Food & Dining:Restaurants",
+      "postedOn": "1/12/2024",
+      "check": "",
+      "payee": "Pita Inn",
+      "notes": "Refund",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Fidelity Visa",
+      "amount": 75.0,
+      "category": "Food & Dining:Restaurants",
+      "postedOn": "1/11/2024",
+      "check": "",
+      "payee": "Pita Inn",
+      "notes": "Refund",
+      "tags": "",
+      "state": "cleared"
+    }
   ]
 }

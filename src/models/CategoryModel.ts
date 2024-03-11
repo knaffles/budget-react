@@ -11,10 +11,10 @@ import { ICategory } from "../types/Category";
 
 export interface ICategoryModel {
   categories: ICategory[];
-  getParent(category: string): void;
+  getParent(category: string): string | null;
   getChildren(category: string): void;
   getType(category: string): string;
-  isEnvelope(category: string): void;
+  isEnvelope(category: string): boolean;
 }
 
 class CategoryModel implements ICategoryModel {
@@ -63,18 +63,10 @@ class CategoryModel implements ICategoryModel {
   }
 
   getType(category: string) {
-    const result = this.categories.find(function (element) {
-      return element.name == category;
-    });
-
-    if (result) {
-      if (result.name.slice(0, 6) == "Income") {
-        return "Income";
-      } else {
-        return "Expense";
-      }
+    if (category.slice(0, 6) == "Income") {
+      return "Income";
     } else {
-      return "";
+      return "Expense";
     }
   }
 
@@ -86,7 +78,7 @@ class CategoryModel implements ICategoryModel {
     if (result) {
       return result.envelope;
     } else {
-      return null;
+      return false;
     }
   }
 }

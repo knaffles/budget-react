@@ -2,36 +2,6 @@ import { sort } from "./utils";
 import { ICategoryModel } from "./CategoryModel";
 import { IBudget } from "../types/Budget";
 
-export interface IMonths {
-  month1: number;
-  month2: number;
-  month3: number;
-  month4: number;
-  month5: number;
-  month6: number;
-  month7: number;
-  month8: number;
-  month9: number;
-  month10: number;
-  month11: number;
-  month12: number;
-}
-
-export interface INodeIds {
-  nodeId1: string;
-  nodeId2: string;
-  nodeId3: string;
-  nodeId4: string;
-  nodeId5: string;
-  nodeId6: string;
-  nodeId7: string;
-  nodeId8: string;
-  nodeId9: string;
-  nodeId10: string;
-  nodeId11: string;
-  nodeId12: string;
-}
-
 export interface IBudgetRowEntry {
   category: string;
   nodeId: string;
@@ -135,7 +105,7 @@ class BudgetModel implements IBudgetModel {
       } else if (catType == "Expense") {
         this.budgetExpenses.push(entry);
       }
-      console.log(catType);
+      console.log("cat type for ", categories[i], ": ", catType);
     }
 
     // Calculate totals for entire year.
