@@ -96,6 +96,17 @@
       "state": "cleared"
     },
     {
+      "account": "Visa",
+      "amount": 15.0,
+      "category": "Unbudgeted Category",
+      "postedOn": "1/15/2024",
+      "check": "",
+      "payee": "Some Place",
+      "notes": "",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
       "account": "Discover",
       "amount": 25.05,
       "category": "Food & Dining:Restaurants",
@@ -113,6 +124,17 @@
       "postedOn": "1/24/2023",
       "check": "",
       "payee": "Pub Grill",
+      "notes": "",
+      "tags": "",
+      "state": "cleared"
+    },
+    {
+      "account": "Visa",
+      "amount": 104.23,
+      "category": "Unbudgeted Category",
+      "postedOn": "1/24/2023",
+      "check": "",
+      "payee": "Software",
       "notes": "",
       "tags": "",
       "state": "cleared"

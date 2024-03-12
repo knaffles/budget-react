@@ -45,6 +45,12 @@ export interface ITransactionsOverUnder {
   ytd: number;
 }
 
+export interface ITransactionsNoBudgetRow {
+  fullCategory: string;
+  category: string;
+  sum: number;
+}
+
 export interface ITransactionsModel {
   budgetModel: IBudgetModel;
   categoryModel: ICategoryModel;
@@ -56,6 +62,7 @@ export interface ITransactionsModel {
   totalEnvelope: ITransactionsEnvelopeTotals;
   totalIncome: ITransactionsTotals;
   overUnder: ITransactionsOverUnder;
+  noBudget: ITransactionsNoBudgetRow[];
   cleanData(): void;
   calculateOverUnder(): void;
   getUniqueCategories(month: number, year: number): void;
@@ -80,6 +87,7 @@ class TransactionsModel implements ITransactionsModel {
   totalIncome: ITransactionsTotals;
   totalEnvelope: ITransactionsEnvelopeTotals;
   overUnder: ITransactionsOverUnder;
+  noBudget: ITransactionsNoBudgetRow[];
 
   constructor(
     budgetModel: IBudgetModel,
@@ -96,6 +104,7 @@ class TransactionsModel implements ITransactionsModel {
     this.totalIncome = {} as ITransactionsTotals;
     this.totalEnvelope = {} as ITransactionsEnvelopeTotals;
     this.overUnder = {} as ITransactionsOverUnder;
+    this.noBudget = [];
   }
 
   // Remove commas and convert amounts to floats.
@@ -117,7 +126,7 @@ class TransactionsModel implements ITransactionsModel {
       transaction
     ) {
       const parsedDate = parseDate(transaction.postedOn),
-        thisMonth = parsedDate.month,
+        thisMonth = parsedDate.month - 1,
         thisYear = parsedDate.year;
 
       if (allCategories.indexOf(transaction.category) > -1) {
@@ -314,7 +323,7 @@ class TransactionsModel implements ITransactionsModel {
 
   // Get all transactions with no associated budget.
   getTransactionsWithNoBudget(budgetMonth: number, budgetYear: number) {
-    const finalNoBudget = [];
+    const finalNoBudget: ITransactionsNoBudgetRow[] = [];
 
     // Get all the categories associated with transactions in this budget year.
     const allCategories = this.getUniqueCategories(budgetMonth, budgetYear);
@@ -384,7 +393,7 @@ class TransactionsModel implements ITransactionsModel {
       }
     }
 
-    // this.renderNoBudgetTable(finalNoBudget, budgetMonth, budgetYear);
+    this.noBudget = finalNoBudget;
   }
 
   calculateOverUnder() {

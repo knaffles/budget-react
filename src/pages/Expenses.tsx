@@ -2,11 +2,13 @@ import { collection, onSnapshot, query } from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../App";
 import { EnvelopeTable } from "../components/EnvelopeTable";
+import { NoBudgetTable } from "../components/NoBudgetTable";
 import { OverUnderTable } from "../components/OverUnderTable";
 import { TransactionsTable } from "../components/TransactionsTable";
 import TransactionsModel, {
   ITransactionsEnvelopeRow,
   ITransactionsEnvelopeTotals,
+  ITransactionsNoBudgetRow,
   ITransactionsOverUnder,
   ITransactionsRow,
   ITransactionsTotals,
@@ -43,6 +45,7 @@ const Expenses = () => {
     {} as ITransactionsEnvelopeTotals
   );
   const [overUnder, setOverUnder] = useState({} as ITransactionsOverUnder);
+  const [noBudget, setNoBudget] = useState<ITransactionsNoBudgetRow[]>([]);
 
   useEffect(() => {
     if (!appContext || appContext?.loadingCategories) {
@@ -71,7 +74,7 @@ const Expenses = () => {
         });
         transactionsModel.rows = transactionsResult;
 
-        transactionsModel.filterToMonth(month, 2024); // TODO: Hardcoded month and year.
+        transactionsModel.filterToMonth(month, appContext.year ?? 2024); // TODO:Shouldn't need this conditional.
         setExpenses(transactionsModel.finalExpenses);
         setIncome(transactionsModel.finalIncome);
         setTotalExpenses(transactionsModel.totalExpenses);
@@ -82,6 +85,13 @@ const Expenses = () => {
         // Calculate over/under totals.
         transactionsModel.calculateOverUnder();
         setOverUnder(transactionsModel.overUnder);
+
+        // Find transactions with no associated budget.
+        transactionsModel.getTransactionsWithNoBudget(
+          month,
+          appContext.year ?? 2024
+        );
+        setNoBudget(transactionsModel.noBudget);
       },
       (error) => {
         console.log(error);
@@ -125,6 +135,7 @@ const Expenses = () => {
       <TransactionsTable data={income} totals={totalIncome} label="Income" />
       <EnvelopeTable data={envelopeExpenses} totals={envelopeTotals} />
       <OverUnderTable data={overUnder} />
+      <NoBudgetTable data={noBudget} />
     </>
   );
 };
