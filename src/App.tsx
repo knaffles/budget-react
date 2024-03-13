@@ -9,6 +9,7 @@ import Budget from "./pages/Budget";
 import Expenses from "./pages/Expenses";
 import Home from "./pages/Home";
 import NoMatch from "./pages/NoMatch";
+import Upload from "./pages/Upload";
 import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
@@ -109,6 +110,7 @@ function App() {
               <Route index element={<Home />} />
               <Route path="budget" element={<Budget />} />
               <Route path="expenses" element={<Expenses />} />
+              <Route path="upload" element={<Upload />} />
 
               {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

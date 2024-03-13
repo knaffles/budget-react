@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { IBudgetRowEntry, ITotals } from "../models/BudgetModel";
-import { roundTwoDigits } from "../models/utils";
+import { roundTwoDigits } from "../lib/utils";
 import { IBudget } from "../types/Budget";
 import styles from "./BudgetTable.module.css";
 

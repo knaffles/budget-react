@@ -1,4 +1,4 @@
-import { sort } from "./utils";
+import { sort } from "../lib/utils";
 import { ICategoryModel } from "./CategoryModel";
 import { IBudget } from "../types/Budget";
 

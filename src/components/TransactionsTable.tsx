@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { roundTwoDigits } from "../models/utils";
+import { roundTwoDigits } from "../lib/utils";
 import styles from "./BudgetTable.module.css";
 import {
   ITransactionsTotals,

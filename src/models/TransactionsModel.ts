@@ -1,8 +1,7 @@
-import { parseDate } from "./utils";
-import { ICategoryModel } from "./CategoryModel";
+import { parseDate, sort } from "../lib/utils";
 import { ITransaction } from "../types/Transaction";
-import { sort } from "./utils";
 import { IBudgetModel } from "./BudgetModel";
+import { ICategoryModel } from "./CategoryModel";
 
 export interface ITransactionsRow {
   fullCategory: string;
@@ -117,7 +116,7 @@ class TransactionsModel implements ITransactionsModel {
     }
   }
 
-  // Get all the categories associated with all transactions in a given year.
+  // Get all the categories associated with all transactions in a given month and year.
   getUniqueCategories(month: number, year: number) {
     // Reduce the transactions and sum the total for each category.
 
