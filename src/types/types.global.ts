@@ -11,6 +11,7 @@ export type AppContextType = {
   categoryModel: ICategoryModel;
   budgetModel: IBudgetModel;
   loadingCategories: boolean;
+  loadingBudget: boolean;
   budgetData: {
     budgetExpenses: IBudgetRowEntry[];
     budgetIncome: IBudgetRowEntry[];

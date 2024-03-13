@@ -1,3 +1,5 @@
+import { IUpload, IUploadRaw } from "../types/Upload";
+
 // Preprocess the file, removing commas from the start of each line.
 export const preProcessUpload = (
   file: File,
@@ -14,7 +16,7 @@ export const preProcessUpload = (
     const lines = (<string>contents).split(/[\r\n]+/g); // Tolerate both Windows and Unix linebreaks
 
     // If the first character is a comma, remove it.
-    lines.forEach((line: string, index) => {
+    lines.forEach((line: string) => {
       if (line.charAt(0) === ",") {
         newString += line.substring(1) + "\n";
       } else {
@@ -29,15 +31,19 @@ export const preProcessUpload = (
   reader.readAsText(file);
 };
 
-export const processUpload = (data: unknown[]) => {
-  // TODO: Define the structure for data.
-  // The first item in the object is always empty. Remove it.
-  data.forEach((item, index) => {
+export const processUpload = (data: IUploadRaw[]) => {
+  const newData: IUpload[] = [];
+  data.forEach((item) => {
     // Remove commas and dollar signs.
-    const newAmount = item.amount.replace("$", "").replace(",", "");
+    let newAmount: string | number = item.amount
+      .replace("$", "")
+      .replace(",", "");
+    newAmount = parseFloat(newAmount);
 
     // Convert to a number.
-    data[index].amount = parseFloat(newAmount);
+    const newItem = { ...item, amount: newAmount };
+
+    newData.push(newItem);
   });
 
   return data;

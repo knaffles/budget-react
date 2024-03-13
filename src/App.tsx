@@ -3,8 +3,8 @@ import { createContext, useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
-import BudgetModel from "./models/BudgetModel";
-import CategoryModel from "./models/CategoryModel";
+import BudgetModel, { IBudgetModel } from "./models/BudgetModel";
+import CategoryModel, { ICategoryModel } from "./models/CategoryModel";
 import Budget from "./pages/Budget";
 import Expenses from "./pages/Expenses";
 import Home from "./pages/Home";
@@ -21,8 +21,9 @@ function App() {
   const [year, setYear] = useState(new Date().getFullYear());
   const [theme, setTheme] = useState<string>("light");
   const [loadingCategories, setLoadingCategories] = useState(true);
-  const [categoryModel, setCategoryModel] = useState({} as CategoryModel);
-  const [budgetModel, setBudgetModel] = useState({} as BudgetModel);
+  const [loadingBudget, setLoadingBudget] = useState(true);
+  const [categoryModel, setCategoryModel] = useState({} as ICategoryModel);
+  const [budgetModel, setBudgetModel] = useState({} as IBudgetModel);
   const [budgetData, setBudgetData] = useState<AppContextType["budgetData"]>(
     {} as AppContextType["budgetData"]
   );
@@ -63,6 +64,7 @@ function App() {
     const unsubscribe = onSnapshot(
       qBudget,
       (querySnapshot) => {
+        setLoadingBudget(true);
         const budgetResult = querySnapshot.docs.map((doc) => {
           const result = doc.data() as IBudget;
           result.nodeId = doc.id;
@@ -77,6 +79,7 @@ function App() {
           totalIncome: budgetsModel.totalIncome,
           budgetDiff: budgetsModel.budgetDiff,
         });
+        setLoadingBudget(false);
       },
       (error) => {
         console.log(error);
@@ -97,6 +100,7 @@ function App() {
         budgetModel,
         categoryModel,
         loadingCategories,
+        loadingBudget,
         budgetData,
       }}
     >

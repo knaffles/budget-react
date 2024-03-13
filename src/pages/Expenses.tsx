@@ -48,7 +48,11 @@ const Expenses = () => {
   const [noBudget, setNoBudget] = useState<ITransactionsNoBudgetRow[]>([]);
 
   useEffect(() => {
-    if (!appContext || appContext?.loadingCategories) {
+    if (
+      !appContext ||
+      appContext.loadingCategories ||
+      appContext.loadingBudget
+    ) {
       return;
     }
 
@@ -87,6 +91,7 @@ const Expenses = () => {
         setOverUnder(transactionsModel.overUnder);
 
         // Find transactions with no associated budget.
+        // TODO: Fix year.
         transactionsModel.getTransactionsWithNoBudget(
           month,
           appContext.year ?? 2024
@@ -99,7 +104,12 @@ const Expenses = () => {
     );
 
     return unsubscribe;
-  }, [appContext, month]);
+  }, [
+    appContext,
+    appContext?.loadingCategories,
+    appContext?.loadingBudget,
+    month,
+  ]);
 
   return (
     <>

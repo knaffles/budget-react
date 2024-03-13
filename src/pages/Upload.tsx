@@ -7,6 +7,7 @@ import {
   generateCategories,
   generateBugdet,
 } from "../services/firebase-actions";
+import { IUploadRaw } from "../types/Upload";
 
 const Upload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -18,7 +19,7 @@ const Upload = () => {
       skipEmptyLines: true,
     });
 
-    const transactions = processUpload(parsedResult.data);
+    const transactions = processUpload(parsedResult.data as IUploadRaw[]);
 
     // Loop through each item and add to the transaction collection.
     transactions.forEach(async (value) => {
