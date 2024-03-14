@@ -3,9 +3,9 @@ import { IBudgetModel, ITotals } from "../models/BudgetModel";
 import { IBudgetRowEntry } from "../models/BudgetModel";
 
 export type AppContextType = {
-  year: number | null;
+  year: number;
   setYear: (year: number) => void;
-  user: string | null;
+  user: string;
   theme: string;
   setTheme: (theme: string) => void;
   categoryModel: ICategoryModel;

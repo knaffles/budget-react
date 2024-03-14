@@ -2,15 +2,15 @@
 // TODO: Add additional error handling.
 
 import { doc, updateDoc } from "firebase/firestore";
-import { useContext, useState } from "react";
-import { AppContext } from "../App";
+import { useState } from "react";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
 import Modal from "../components/Modal";
+import useAppContext from "../hooks/useAppContext";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
 
 const Budget = () => {
-  const appContext = useContext(AppContext);
+  const { user, budgetData } = useAppContext();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");
@@ -24,7 +24,7 @@ const Budget = () => {
   const handleCellUpdate = async (budgetValue: number) => {
     // TODO - Check to see if nodeId exists...if not, create a new budget entry first.
     try {
-      const docRef = doc(db, `user/${appContext?.user}/budget/${modalNodeId}`);
+      const docRef = doc(db, `user/${user}/budget/${modalNodeId}`);
       await updateDoc(docRef, { amount: budgetValue });
     } catch (error) {
       console.log(error);
@@ -34,37 +34,30 @@ const Budget = () => {
   return (
     <>
       <h1>Budget</h1>
-      {/***************** TODO: Fix all these conditionals */}
-      {appContext?.budgetData?.budgetExpenses?.length &&
-        appContext?.budgetData.budgetExpenses.length > 0 && (
-          <BudgetTable
-            label="Expenses"
-            data={appContext?.budgetData.budgetExpenses ?? []}
-            totals={appContext?.budgetData.totalExpenses ?? {}}
-            firstColLabel="Category"
-            onCellClick={handleCellClick}
-          />
-        )}
+      {budgetData.budgetExpenses?.length > 0 && (
+        <BudgetTable
+          label="Expenses"
+          data={budgetData.budgetExpenses}
+          totals={budgetData.totalExpenses}
+          firstColLabel="Category"
+          onCellClick={handleCellClick}
+        />
+      )}
 
-      {appContext?.budgetData?.budgetIncome?.length &&
-        appContext?.budgetData.budgetIncome.length > 0 && (
-          <BudgetTable
-            label="Income"
-            data={appContext?.budgetData.budgetIncome ?? []}
-            totals={appContext?.budgetData.totalIncome}
-            firstColLabel="Category"
-            onCellClick={handleCellClick}
-          />
-        )}
+      {budgetData.budgetIncome?.length > 0 && (
+        <BudgetTable
+          label="Income"
+          data={budgetData.budgetIncome}
+          totals={budgetData.totalIncome}
+          firstColLabel="Category"
+          onCellClick={handleCellClick}
+        />
+      )}
 
       {/* TODO: Fix this conditional. Should be checking to see if budgetDiff is populated. */}
-      {appContext?.budgetData?.budgetExpenses?.length &&
-        appContext?.budgetData?.budgetIncome?.length && (
-          <BudgetDiff
-            label="Income - Expenses"
-            data={appContext?.budgetData.budgetDiff}
-          />
-        )}
+      {budgetData.budgetExpenses?.length && budgetData.budgetIncome?.length && (
+        <BudgetDiff label="Income - Expenses" data={budgetData.budgetDiff} />
+      )}
 
       {
         <Modal

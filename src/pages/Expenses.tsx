@@ -1,10 +1,11 @@
 import { collection, onSnapshot, query } from "firebase/firestore";
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "../App";
+import { useEffect, useState } from "react";
 import { EnvelopeTable } from "../components/EnvelopeTable";
 import { NoBudgetTable } from "../components/NoBudgetTable";
 import { OverUnderTable } from "../components/OverUnderTable";
 import { TransactionsTable } from "../components/TransactionsTable";
+import { months } from "../data/constants";
+import useAppContext from "../hooks/useAppContext";
 import TransactionsModel, {
   ITransactionsEnvelopeRow,
   ITransactionsEnvelopeTotals,
@@ -16,23 +17,15 @@ import TransactionsModel, {
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-
 const Expenses = () => {
-  const appContext = useContext(AppContext);
+  const {
+    user,
+    year,
+    loadingBudget,
+    loadingCategories,
+    budgetModel,
+    categoryModel,
+  } = useAppContext();
   const [month, setMonth] = useState<number>(0);
   const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
   const [income, setIncome] = useState<ITransactionsRow[]>([]);
@@ -48,25 +41,19 @@ const Expenses = () => {
   const [noBudget, setNoBudget] = useState<ITransactionsNoBudgetRow[]>([]);
 
   useEffect(() => {
-    if (
-      !appContext ||
-      appContext.loadingCategories ||
-      appContext.loadingBudget
-    ) {
+    if (loadingCategories || loadingBudget) {
       return;
     }
 
     // Create the budget model with empty data for now.
     const transactionsModel = new TransactionsModel(
-      appContext.budgetModel,
-      appContext.categoryModel,
+      budgetModel,
+      categoryModel,
 
       []
     );
 
-    const qBudget = query(
-      collection(db, `user/${appContext?.user}/transaction`)
-    );
+    const qBudget = query(collection(db, `user/${user}/transaction`));
 
     const unsubscribe = onSnapshot(
       qBudget,
@@ -78,7 +65,7 @@ const Expenses = () => {
         });
         transactionsModel.rows = transactionsResult;
 
-        transactionsModel.filterToMonth(month, appContext.year ?? 2024); // TODO:Shouldn't need this conditional.
+        transactionsModel.filterToMonth(month, year);
         setExpenses(transactionsModel.finalExpenses);
         setIncome(transactionsModel.finalIncome);
         setTotalExpenses(transactionsModel.totalExpenses);
@@ -92,10 +79,7 @@ const Expenses = () => {
 
         // Find transactions with no associated budget.
         // TODO: Fix year.
-        transactionsModel.getTransactionsWithNoBudget(
-          month,
-          appContext.year ?? 2024
-        );
+        transactionsModel.getTransactionsWithNoBudget(month, year);
         setNoBudget(transactionsModel.noBudget);
       },
       (error) => {
@@ -105,10 +89,13 @@ const Expenses = () => {
 
     return unsubscribe;
   }, [
-    appContext,
-    appContext?.loadingCategories,
-    appContext?.loadingBudget,
+    budgetModel,
+    categoryModel,
+    loadingCategories,
+    loadingBudget,
     month,
+    year,
+    user,
   ]);
 
   return (
@@ -122,7 +109,6 @@ const Expenses = () => {
         <select
           className="select select-bordered select-sm"
           onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-            console.log(event.target.value);
             setMonth(parseInt(event.target.value));
           }}
           value={month}

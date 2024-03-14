@@ -1,14 +1,13 @@
 // TODO: Save theme in localStorage.
 
-import { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AppContext } from "../App";
 import { years } from "../data/constants";
+import useAppContext from "../hooks/useAppContext";
 
 const Header = () => {
-  const appContext = useContext(AppContext);
+  const { setYear, theme, setTheme, year } = useAppContext();
   const handleSelectYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    appContext?.setYear && appContext.setYear(parseInt(event.target.value));
+    setYear(parseInt(event.target.value));
   };
 
   return (
@@ -44,7 +43,7 @@ const Header = () => {
           <select
             className="select select-bordered select-sm"
             onChange={handleSelectYear}
-            value={appContext?.year ?? ""}
+            value={year}
           >
             {years.map((year) => {
               return (
@@ -59,10 +58,10 @@ const Header = () => {
         <button
           className="btn btn-primary"
           onClick={() => {
-            if (appContext?.theme === "light") {
-              appContext?.setTheme("dark");
+            if (theme === "light") {
+              setTheme("dark");
             } else {
-              appContext?.setTheme("light");
+              setTheme("light");
             }
           }}
         >

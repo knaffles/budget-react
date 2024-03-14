@@ -1,15 +1,17 @@
-import { useState } from "react";
-import papa from "papaparse";
-import { processUpload, preProcessUpload } from "../lib/uploads";
-import { db } from "../services/firebase";
 import { addDoc, collection } from "firebase/firestore";
+import papa from "papaparse";
+import { useState } from "react";
+import useAppContext from "../hooks/useAppContext";
+import { preProcessUpload, processUpload } from "../lib/uploads";
+import { db } from "../services/firebase";
 import {
+  generateBudget,
   generateCategories,
-  generateBugdet,
 } from "../services/firebase-actions";
 import { IUploadRaw } from "../types/Upload";
 
 const Upload = () => {
+  const { user, year } = useAppContext();
   const [file, setFile] = useState<File | null>(null);
   const handleCallBack = (result: string) => {
     const parsedResult = papa.parse(result, {
@@ -23,7 +25,7 @@ const Upload = () => {
 
     // Loop through each item and add to the transaction collection.
     transactions.forEach(async (value) => {
-      await addDoc(collection(db, "user/user1/transaction"), value);
+      await addDoc(collection(db, `user/${user}/transaction`), value);
     });
   };
 
@@ -55,10 +57,16 @@ const Upload = () => {
         </button>
       </form>
 
-      <button onClick={generateCategories} className="btn btn-primary">
+      <button
+        onClick={() => generateCategories(user)}
+        className="btn btn-primary"
+      >
         Generate categories
       </button>
-      <button onClick={generateBugdet} className="btn btn-primary">
+      <button
+        onClick={() => generateBudget(user, year)}
+        className="btn btn-primary"
+      >
         Generate budget
       </button>
     </>

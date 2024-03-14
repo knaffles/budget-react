@@ -25,7 +25,6 @@ export interface IBudgetModel {
   totalExpenses: ITotals;
   totalIncome: ITotals;
   buildBudgetData(): void;
-  cleanData(): void;
   hasCategory(category: string, year: number): void;
   getCategoryList(year: number): string[];
   getCategory(category: string, month: number, year: number): number;
@@ -105,7 +104,6 @@ class BudgetModel implements IBudgetModel {
       } else if (catType == "Expense") {
         this.budgetExpenses.push(entry);
       }
-      console.log("cat type for ", categories[i], ": ", catType);
     }
 
     // Calculate totals for entire year.
@@ -124,19 +122,6 @@ class BudgetModel implements IBudgetModel {
     }
 
     this.budgetDiff.total = this.totalIncome.total - this.totalExpenses.total;
-
-    console.log("built budget model");
-  }
-
-  // Convert months and years to integers and then remove commas and convert amounts to floats.
-  cleanData() {
-    // TODO: Confirm we no longer need this method. Verify that all data is being imported in the correct type.
-    // for (let i = 0; i < this.rows.length; i++) {
-    //   this.rows[i].month = parseInt(this.rows[i].month);
-    //   this.rows[i].year = parseInt(this.rows[i].year);
-    //   this.rows[i].amount = this.rows[i].amount.replace(/,/g, ""); // Remove commas.
-    //   this.rows[i].amount = parseFloat(this.rows[i].amount);
-    // }
   }
 
   // Does the budget have any entries for this category?

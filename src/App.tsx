@@ -1,8 +1,9 @@
 import { collection, getDocs, onSnapshot, query } from "firebase/firestore";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
+import { AppContext } from "./hooks/useAppContext";
 import BudgetModel, { IBudgetModel } from "./models/BudgetModel";
 import CategoryModel, { ICategoryModel } from "./models/CategoryModel";
 import Budget from "./pages/Budget";
@@ -14,8 +15,6 @@ import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
 import { AppContextType } from "./types/types.global";
-
-export const AppContext = createContext<AppContextType | null>(null);
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
