@@ -62,7 +62,6 @@ export interface ITransactionsModel {
   totalIncome: ITransactionsTotals;
   overUnder: ITransactionsOverUnder;
   noBudget: ITransactionsNoBudgetRow[];
-  cleanData(): void;
   calculateOverUnder(): void;
   getUniqueCategories(month: number, year: number): void;
   getTransactionsInMonthYear(
@@ -104,16 +103,6 @@ class TransactionsModel implements ITransactionsModel {
     this.totalEnvelope = {} as ITransactionsEnvelopeTotals;
     this.overUnder = {} as ITransactionsOverUnder;
     this.noBudget = [];
-  }
-
-  // Remove commas and convert amounts to floats.
-  cleanData() {
-    for (let i = 0; i < this.rows.length; i++) {
-      // We are assuming that .Amount comes in as a float.
-      // this.rows[i].Amount = this.rows[i].Amount.replace(/,/g, ''); // Remove commas.
-      // this.rows[i].amount = parseFloat(this.rows[i].amount);
-      // TODO: Remove the dollar sign at the start:
-    }
   }
 
   // Get all the categories associated with all transactions in a given month and year.

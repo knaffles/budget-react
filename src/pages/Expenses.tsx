@@ -78,7 +78,6 @@ const Expenses = () => {
         setOverUnder(transactionsModel.overUnder);
 
         // Find transactions with no associated budget.
-        // TODO: Fix year.
         transactionsModel.getTransactionsWithNoBudget(month, year);
         setNoBudget(transactionsModel.noBudget);
       },

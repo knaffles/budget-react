@@ -1,6 +1,4 @@
-// TODO: Move data fetching to a hook.
 // TODO: Add additional error handling.
-
 import { doc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";

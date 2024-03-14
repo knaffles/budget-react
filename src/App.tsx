@@ -40,7 +40,6 @@ function App() {
         return result;
       });
 
-      // TODO: Fix default value of appcontext?,year
       const categoriesModel = new CategoryModel(categoriesResult);
       setCategoryModel(categoriesModel);
       setLoadingCategories(false);
@@ -55,7 +54,7 @@ function App() {
     }
 
     // Create the budget model with empty data for now.
-    const budgetsModel = new BudgetModel(categoryModel, [], year ?? 0);
+    const budgetsModel = new BudgetModel(categoryModel, [], year);
     setBudgetModel(budgetsModel);
 
     const qBudget = query(collection(db, `user/${user}/budget`));

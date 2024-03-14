@@ -9,7 +9,7 @@ const useAppContext = () => {
   // Throw an error if the current app context is still null. This keeps us from having to use optional chaining everytime we reference an app context variable, e.g. appContex?.user.
   if (!currentAppContext) {
     throw new Error(
-      "useCurrentUser has to be used within <AppContext.Provider>"
+      "useAppContext has to be used within <AppContext.Provider>"
     );
   }
 
