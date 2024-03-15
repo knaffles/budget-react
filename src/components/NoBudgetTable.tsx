@@ -1,22 +1,11 @@
 import { FC } from "react";
-import { roundTwoDigits } from "../lib/utils";
-import styles from "./BudgetTable.module.css";
 import { ITransactionsNoBudgetRow } from "../models/TransactionsModel";
+import styles from "./BudgetTable.module.css";
+import FormattedData from "./FormattedData";
 
 export interface INoBudgetTable {
   data: ITransactionsNoBudgetRow[];
 }
-
-const FormattedData = ({ data }: { data: number }) => {
-  return (
-    <>
-      {data < 0 && (
-        <span className={styles.negative}>{roundTwoDigits(data)}</span>
-      )}
-      {data >= 0 && <span>{roundTwoDigits(data)}</span>}
-    </>
-  );
-};
 
 export const NoBudgetTable: FC<INoBudgetTable> = ({ data }) => {
   return (

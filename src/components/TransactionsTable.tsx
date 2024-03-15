@@ -1,27 +1,16 @@
 import { FC } from "react";
-import { roundTwoDigits } from "../lib/utils";
-import styles from "./BudgetTable.module.css";
 import {
-  ITransactionsTotals,
   ITransactionsRow,
+  ITransactionsTotals,
 } from "../models/TransactionsModel";
+import FormattedData from "./FormattedData";
+import styles from "./TransactionsTable.module.css";
 
 export interface ITransactionsTable {
   label: string;
   data: ITransactionsRow[];
   totals: ITransactionsTotals;
 }
-
-const FormattedData = ({ data }: { data: number }) => {
-  return (
-    <>
-      {data < 0 && (
-        <span className={styles.negative}>{roundTwoDigits(data)}</span>
-      )}
-      {data >= 0 && <span>{roundTwoDigits(data)}</span>}
-    </>
-  );
-};
 
 export const TransactionsTable: FC<ITransactionsTable> = ({
   label,
@@ -30,7 +19,7 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
 }) => {
   return (
     <div className="overflow-x-auto">
-      <table className={`table table-xs ${styles["budget-table"]}`}>
+      <table className={`table table-xs ${styles["transactions-table"]}`}>
         <caption className="text-left">{label}</caption>
         <thead>
           <tr>

@@ -1,3 +1,5 @@
+// TODO: Show progress indicator when uploading transactions.
+
 import { addDoc, collection } from "firebase/firestore";
 import papa from "papaparse";
 import { useState } from "react";

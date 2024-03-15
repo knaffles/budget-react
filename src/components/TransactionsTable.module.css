@@ -1,4 +1,4 @@
-.budget-table {
+.transactions-table {
   margin: 0 auto 4rem;
 
   thead,
@@ -14,7 +14,7 @@
       td,
       th {
         text-align: right;
-        width: 5rem;
+        width: 9rem;
       }
     }
   }

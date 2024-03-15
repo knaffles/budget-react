@@ -110,6 +110,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
+              {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
               <Route path="budget" element={<Budget />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="upload" element={<Upload />} />

@@ -1,26 +1,15 @@
 import { FC } from "react";
-import { roundTwoDigits } from "../lib/utils";
-import styles from "./BudgetTable.module.css";
 import {
   ITransactionsEnvelopeRow,
   ITransactionsEnvelopeTotals,
 } from "../models/TransactionsModel";
+import styles from "./BudgetTable.module.css";
+import FormattedData from "./FormattedData";
 
 export interface IEnvelopeTable {
   data: ITransactionsEnvelopeRow[];
   totals: ITransactionsEnvelopeTotals;
 }
-
-const FormattedData = ({ data }: { data: number }) => {
-  return (
-    <>
-      {data < 0 && (
-        <span className={styles.negative}>{roundTwoDigits(data)}</span>
-      )}
-      {data >= 0 && <span>{roundTwoDigits(data)}</span>}
-    </>
-  );
-};
 
 export const EnvelopeTable: FC<IEnvelopeTable> = ({ data, totals }) => {
   return (
