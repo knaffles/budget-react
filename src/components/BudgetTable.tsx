@@ -9,7 +9,12 @@ export interface IBudgetTable {
   data: IBudgetRowEntry[];
   totals: ITotals;
   firstColLabel?: string;
-  onCellClick(nodeId: IBudget["nodeId"], initialValue: number): void;
+  onCellClick(
+    nodeId: IBudget["nodeId"],
+    initialValue: number,
+    month: number
+  ): void;
+  onDelete(nodeId: IBudget["nodeId"]): void;
 }
 
 export interface IBudgetDiff {
@@ -23,6 +28,7 @@ export const BudgetTable: FC<IBudgetTable> = ({
   totals,
   firstColLabel = "",
   onCellClick,
+  onDelete,
 }) => {
   const monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
@@ -53,13 +59,27 @@ export const BudgetTable: FC<IBudgetTable> = ({
             {
               return (
                 <tr key={category.category}>
-                  <td>{category.displayCategory}</td>
+                  <td>
+                    <div className="flex items-center justify-between group/cat">
+                      {category.displayCategory}
+                      <button
+                        className="btn btn-neutral btn-xs opacity-0 group-hover/cat:opacity-100"
+                        onClick={() => onDelete(category.nodeId)}
+                      >
+                        (delete)
+                      </button>
+                    </div>
+                  </td>
                   {monthsArray.map((month) => (
                     <td
                       key={month}
-                      onClick={() =>
-                        onCellClick(category.nodeId, category.amount[month])
-                      }
+                      onClick={() => {
+                        onCellClick(
+                          category.nodeId,
+                          category.amount[month],
+                          month
+                        );
+                      }}
                     >
                       <FormattedData data={category.amount[month]} />
                     </td>

@@ -1,5 +1,5 @@
 // TODO: Add additional error handling.
-import { doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
 import Modal from "../components/Modal";
@@ -12,18 +12,45 @@ const Budget = () => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");
+  const [modalMonth, setModalMonth] = useState<number>(0);
 
-  const handleCellClick = (nodeId: IBudget["nodeId"], initialValue: number) => {
+  const handleCellClick = (
+    nodeId: IBudget["nodeId"],
+    initialValue: number,
+    month: number
+  ) => {
     setShowModal(true);
     setModalNodeId(nodeId);
     setModalInitialValue(initialValue);
+    setModalMonth(month);
   };
 
   const handleCellUpdate = async (budgetValue: number) => {
-    // TODO - Check to see if nodeId exists...if not, create a new budget entry first.
     try {
       const docRef = doc(db, `user/${user}/budget/${modalNodeId}`);
-      await updateDoc(docRef, { amount: budgetValue });
+      const docSnap = await getDoc(docRef);
+      const amount = docSnap.data()?.amount;
+      amount[modalMonth] = budgetValue;
+      await updateDoc(docRef, { amount: amount });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleYearUpdate = async (budgetValue: number) => {
+    try {
+      const docRef = doc(db, `user/${user}/budget/${modalNodeId}`);
+      const amount = Array(12).fill(budgetValue);
+      await updateDoc(docRef, { amount: amount });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (nodeId: IBudget["nodeId"]) => {
+    try {
+      const docRef = doc(db, `user/${user}/budget/${nodeId}`);
+      await deleteDoc(docRef);
     } catch (error) {
       console.log(error);
     }
@@ -39,6 +66,7 @@ const Budget = () => {
           totals={budgetData.totalExpenses}
           firstColLabel="Category"
           onCellClick={handleCellClick}
+          onDelete={handleDelete}
         />
       )}
 
@@ -49,6 +77,7 @@ const Budget = () => {
           totals={budgetData.totalIncome}
           firstColLabel="Category"
           onCellClick={handleCellClick}
+          onDelete={handleDelete}
         />
       )}
 
@@ -57,16 +86,16 @@ const Budget = () => {
         <BudgetDiff label="Income - Expenses" data={budgetData.budgetDiff} />
       )}
 
-      {
+      {showModal && (
         <Modal
-          handleUpdate={handleCellUpdate}
-          showModal={showModal}
+          onUpdate={handleCellUpdate}
+          onYearUpdate={handleYearUpdate}
           initialValue={modalInitialValue}
-          handleClose={() => {
+          onClose={() => {
             setShowModal(false);
           }}
         />
-      }
+      )}
     </>
   );
 };

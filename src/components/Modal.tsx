@@ -1,36 +1,38 @@
 import { FC, useEffect, useRef, useState } from "react";
 
 export interface IModal {
-  handleUpdate(value: number): void | Promise<void>;
-  showModal: boolean;
-  handleClose(): void;
+  onUpdate(value: number): void | Promise<void>;
+  onClose(): void;
   initialValue: number;
+  onYearUpdate(value: number): void;
 }
 
 const Modal: FC<IModal> = ({
-  handleUpdate,
-  showModal,
-  handleClose,
+  onUpdate,
+  onClose,
   initialValue,
+  onYearUpdate,
 }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
-  const [budgetValue, setBudgetValue] = useState<number>(0);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const [budgetValue, setBudgetValue] = useState<number>(initialValue);
 
   const closeModal = () => {
-    modalRef.current?.close();
-    handleClose();
+    onClose();
   };
 
   const handleSubmit = () => {
-    handleUpdate(budgetValue);
+    onUpdate(budgetValue);
+  };
+
+  const handleYearClick = () => {
+    onYearUpdate(budgetValue);
+    closeModal();
   };
 
   useEffect(() => {
-    if (showModal) {
-      modalRef.current?.showModal();
-      setBudgetValue(initialValue);
-    }
-  }, [showModal, initialValue]);
+    modalRef.current?.showModal();
+  }, []);
 
   return (
     <dialog className="modal" ref={modalRef} onClose={closeModal}>
@@ -40,21 +42,29 @@ const Modal: FC<IModal> = ({
         <div className="modal-action justify-start">
           <form method="dialog" onSubmit={handleSubmit}>
             <input
+              ref={inputRef}
               className="input input-bordered w-full max-w-xs"
-              step=".01"
+              step="1"
               type="number"
               value={budgetValue}
               name="budgetValue"
-              onChange={(event) =>
+              onFocus={(event) => {
+                event.target.select();
+              }}
+              onChange={(event) => {
                 setBudgetValue(
                   event.target.value ? parseFloat(event.target.value) : 0
-                )
-              }
+                );
+              }}
             />
 
             <div className="flex gap-2 mt-4">
               <button className="btn btn-primary" type="submit">
                 Update
+              </button>
+
+              <button className="btn" type="button" onClick={handleYearClick}>
+                Update Entire Year
               </button>
 
               <button className="btn" type="button" onClick={closeModal}>
