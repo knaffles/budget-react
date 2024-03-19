@@ -2,7 +2,7 @@
 import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useState } from "react";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
-import Modal from "../components/Modal";
+import BudgetModal from "../components/BudgetModal";
 import useAppContext from "../hooks/useAppContext";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
@@ -87,7 +87,7 @@ const Budget = () => {
       )}
 
       {showModal && (
-        <Modal
+        <BudgetModal
           onUpdate={handleCellUpdate}
           onYearUpdate={handleYearUpdate}
           initialValue={modalInitialValue}
