@@ -1,4 +1,4 @@
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { EnvelopeTable } from "../components/EnvelopeTable";
 import ExpensesModal from "../components/ExpensesModal";
@@ -30,6 +30,7 @@ const Expenses = () => {
     budgetModel,
     categoryModel,
   } = useAppContext();
+  const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
   const [month, setMonth] = useState<number>(0);
   const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
   const [income, setIncome] = useState<ITransactionsRow[]>([]);
@@ -64,6 +65,8 @@ const Expenses = () => {
       return;
     }
 
+    setLoadingTransactions(true);
+
     // Create the transactions model with empty data for now.
     const transactionsModel = new TransactionsModel(
       budgetModel,
@@ -72,7 +75,10 @@ const Expenses = () => {
     );
     setModel(transactionsModel);
 
-    const qBudget = query(collection(db, `user/${user}/transaction`));
+    const qBudget = query(
+      collection(db, `user/${user}/transaction`),
+      where("year", "==", year)
+    );
 
     const unsubscribe = onSnapshot(
       qBudget,
@@ -83,22 +89,7 @@ const Expenses = () => {
           return result;
         });
         transactionsModel.rows = transactionsResult;
-
-        transactionsModel.filterToMonth(month, year);
-        setExpenses(transactionsModel.finalExpenses);
-        setIncome(transactionsModel.finalIncome);
-        setTotalExpenses(transactionsModel.totalExpenses);
-        setTotalIncome(transactionsModel.totalIncome);
-        setEnvelopeExpenses(transactionsModel.finalEnvelope);
-        setEnvelopeTotals(transactionsModel.totalEnvelope);
-
-        // Calculate over/under totals.
-        transactionsModel.calculateOverUnder();
-        setOverUnder(transactionsModel.overUnder);
-
-        // Find transactions with no associated budget.
-        transactionsModel.getTransactionsWithNoBudget(month, year);
-        setNoBudget(transactionsModel.noBudget);
+        setLoadingTransactions(false);
       },
       (error) => {
         console.log(error);
@@ -111,10 +102,32 @@ const Expenses = () => {
     categoryModel,
     loadingCategories,
     loadingBudget,
-    month,
     year,
     user,
   ]);
+
+  // Once the data has been fetched, process all the data.
+  useEffect(() => {
+    if (loadingTransactions) {
+      return;
+    }
+
+    model.filterToMonth(month, year);
+    setExpenses(model.finalExpenses);
+    setIncome(model.finalIncome);
+    setTotalExpenses(model.totalExpenses);
+    setTotalIncome(model.totalIncome);
+    setEnvelopeExpenses(model.finalEnvelope);
+    setEnvelopeTotals(model.totalEnvelope);
+
+    // Calculate over/under totals.
+    model.calculateOverUnder();
+    setOverUnder(model.overUnder);
+
+    // Find transactions with no associated budget.
+    model.getTransactionsWithNoBudget(month, year);
+    setNoBudget(model.noBudget);
+  }, [loadingTransactions, month, model, year]);
 
   return (
     <>

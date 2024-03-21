@@ -1,4 +1,10 @@
-import { collection, getDocs, onSnapshot, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -57,7 +63,10 @@ function App() {
     const budgetsModel = new BudgetModel(categoryModel, [], year);
     setBudgetModel(budgetsModel);
 
-    const qBudget = query(collection(db, `user/${user}/budget`));
+    const qBudget = query(
+      collection(db, `user/${user}/budget`),
+      where("year", "==", year)
+    );
 
     const unsubscribe = onSnapshot(
       qBudget,
