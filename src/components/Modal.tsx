@@ -5,7 +5,7 @@ export interface IModal {
   onClose(): void;
 }
 
-const Modal: FC<IModal> = ({ children, onClose, ...props }) => {
+const Modal: FC<IModal> = ({ onClose, children, ...props }) => {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -16,8 +16,7 @@ const Modal: FC<IModal> = ({ children, onClose, ...props }) => {
     <dialog className="modal" ref={modalRef} onClose={onClose} {...props}>
       <div className="modal-box">
         <h3 className="font-bold text-lg">Hello!</h3>
-        <p className="py-4">Press ESC key or click the button below to close</p>
-        <div className="modal-action justify-start">{children}</div>
+        <div className="modal-action flex-col justify-start">{children}</div>
       </div>
     </dialog>
   );

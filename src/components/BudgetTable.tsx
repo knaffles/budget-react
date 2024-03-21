@@ -22,6 +22,8 @@ export interface IBudgetDiff {
   data: ITotals;
 }
 
+const monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
 export const BudgetTable: FC<IBudgetTable> = ({
   label,
   data,
@@ -30,8 +32,6 @@ export const BudgetTable: FC<IBudgetTable> = ({
   onCellClick,
   onDelete,
 }) => {
-  const monthsArray = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["budget-table"]}`}>
@@ -71,17 +71,18 @@ export const BudgetTable: FC<IBudgetTable> = ({
                     </div>
                   </td>
                   {monthsArray.map((month) => (
-                    <td
-                      key={month}
-                      onClick={() => {
-                        onCellClick(
-                          category.nodeId,
-                          category.amount[month],
-                          month
-                        );
-                      }}
-                    >
-                      <FormattedData data={category.amount[month]} />
+                    <td key={month}>
+                      <button
+                        onClick={() => {
+                          onCellClick(
+                            category.nodeId,
+                            category.amount[month],
+                            month
+                          );
+                        }}
+                      >
+                        <FormattedData data={category.amount[month]} />
+                      </button>
                     </td>
                   ))}
                   <td>
@@ -111,8 +112,6 @@ export const BudgetTable: FC<IBudgetTable> = ({
 };
 
 export const BudgetDiff: FC<IBudgetDiff> = ({ label, data }) => {
-  const monthsArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["budget-table"]}`}>

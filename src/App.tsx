@@ -84,7 +84,7 @@ function App() {
       }
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [user, year, loadingCategories, categoryModel]);
 
   return (

@@ -9,6 +9,8 @@ export interface IUpload {
   notes: string;
   state: string;
   amount: number;
+  year: number;
+  month: number;
 }
 
 // The raw upload data before converting amount to a number.

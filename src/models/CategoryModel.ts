@@ -7,6 +7,8 @@
  * - A category can only have one parent (for now).
  * - Category names are unique. When searching on category name, only one result will be returned.
  */
+
+// TODO: Add ability to edit envelope status.
 import { ICategory } from "../types/Category";
 
 export interface ICategoryModel {

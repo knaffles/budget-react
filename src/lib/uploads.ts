@@ -40,11 +40,19 @@ export const processUpload = (data: IUploadRaw[]) => {
       .replace(",", "");
     newAmount = parseFloat(newAmount);
 
+    // Create month and year fields.
+    const transactionDate = new Date(item.postedOn);
+
     // Convert to a number.
-    const newItem = { ...item, amount: newAmount };
+    const newItem = {
+      ...item,
+      amount: newAmount,
+      month: transactionDate.getMonth(),
+      year: transactionDate.getFullYear(),
+    };
 
     newData.push(newItem);
   });
 
-  return data;
+  return newData;
 };

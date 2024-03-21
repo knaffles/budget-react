@@ -1,5 +1,12 @@
 // TODO: Add additional error handling.
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { useState } from "react";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
 import BudgetModal from "../components/BudgetModal";
@@ -8,11 +15,27 @@ import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
 
 const Budget = () => {
-  const { user, budgetData } = useAppContext();
+  const { user, budgetData, year } = useAppContext();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");
   const [modalMonth, setModalMonth] = useState<number>(0);
+  const [newCategory, setNewCategory] = useState<string>("");
+
+  // Add a new category to the budget.
+  const handleNewCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+
+    try {
+      addDoc(collection(db, `user/${user}/budget`), {
+        amount: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        category: newCategory,
+        year: year,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCellClick = (
     nodeId: IBudget["nodeId"],
@@ -59,6 +82,21 @@ const Budget = () => {
   return (
     <>
       <h1>Budget</h1>
+
+      <div className="flex justify-end" onSubmit={handleNewCategory}>
+        <form className="flex flex-1 gap-2 max-w-sm">
+          <input
+            placeholder="Add a category to the budget"
+            className="input input-bordered input-md w-full"
+            type="text"
+            onChange={(event) => setNewCategory(event?.target.value)}
+          />
+          <button type="submit" className="btn btn-primary">
+            Add Category
+          </button>
+        </form>
+      </div>
+
       {budgetData.budgetExpenses?.length > 0 && (
         <BudgetTable
           label="Expenses"

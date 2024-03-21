@@ -1,6 +1,13 @@
 // TODO: Show progress indicator when uploading transactions.
 
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import papa from "papaparse";
 import { useState } from "react";
 import useAppContext from "../hooks/useAppContext";
@@ -15,7 +22,7 @@ import { IUploadRaw } from "../types/Upload";
 const Upload = () => {
   const { user, year } = useAppContext();
   const [file, setFile] = useState<File | null>(null);
-  const handleCallBack = (result: string) => {
+  const handleCallBack = async (result: string) => {
     const parsedResult = papa.parse(result, {
       delimiter: ",",
       quoteChar: '"',
@@ -25,10 +32,32 @@ const Upload = () => {
 
     const transactions = processUpload(parsedResult.data as IUploadRaw[]);
 
-    // Loop through each item and add to the transaction collection.
-    transactions.forEach(async (value) => {
-      await addDoc(collection(db, `user/${user}/transaction`), value);
+    // First, purge existing transactions for the selected year.
+    const qDelete = query(
+      collection(db, `user/${user}/transaction`),
+      where("year", "==", year)
+    );
+
+    const querySnapshot = await getDocs(qDelete);
+    const deleteDocs: Promise<void>[] = [];
+    querySnapshot.forEach(async (doc) => {
+      deleteDocs.push(deleteDoc(doc.ref));
     });
+
+    await Promise.all(deleteDocs);
+
+    // Loop through each item and add to the transaction collection.
+    // TODO: *********** Create a promise to add all the docs, just like above.
+    transactions.forEach(async (transaction) => {
+      // Only add docs for the current year.
+      if (transaction.year === year) {
+        await addDoc(collection(db, `user/${user}/transaction`), transaction);
+      }
+    });
+
+    console.log("Done uploading.");
+
+    // TODO: Add progress/notification when complete.
   };
 
   const handleSubmit = (event: React.SyntheticEvent) => {

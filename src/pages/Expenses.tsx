@@ -1,6 +1,7 @@
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { EnvelopeTable } from "../components/EnvelopeTable";
+import ExpensesModal from "../components/ExpensesModal";
 import { NoBudgetTable } from "../components/NoBudgetTable";
 import { OverUnderTable } from "../components/OverUnderTable";
 import { TransactionsTable } from "../components/TransactionsTable";
@@ -9,6 +10,7 @@ import useAppContext from "../hooks/useAppContext";
 import TransactionsModel, {
   ITransactionsEnvelopeRow,
   ITransactionsEnvelopeTotals,
+  ITransactionsModel,
   ITransactionsNoBudgetRow,
   ITransactionsOverUnder,
   ITransactionsRow,
@@ -16,6 +18,8 @@ import TransactionsModel, {
 } from "../models/TransactionsModel";
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
+
+// TODO: Verify envelope categories are displaying correctly (positive vs. negative).
 
 const Expenses = () => {
   const {
@@ -39,19 +43,34 @@ const Expenses = () => {
   );
   const [overUnder, setOverUnder] = useState({} as ITransactionsOverUnder);
   const [noBudget, setNoBudget] = useState<ITransactionsNoBudgetRow[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [model, setModel] = useState({} as ITransactionsModel);
+  const [modalData, setModalData] = useState<{
+    sortedResult: ITransaction[];
+    total: number;
+  }>({
+    sortedResult: [],
+    total: 0,
+  });
+
+  const handleCategoryClick = (category: string) => {
+    const categoryData = model.filterTo(category, month, year, false);
+    setShowModal(true);
+    setModalData(categoryData);
+  };
 
   useEffect(() => {
     if (loadingCategories || loadingBudget) {
       return;
     }
 
-    // Create the budget model with empty data for now.
+    // Create the transactions model with empty data for now.
     const transactionsModel = new TransactionsModel(
       budgetModel,
       categoryModel,
-
       []
     );
+    setModel(transactionsModel);
 
     const qBudget = query(collection(db, `user/${user}/transaction`));
 
@@ -86,7 +105,7 @@ const Expenses = () => {
       }
     );
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, [
     budgetModel,
     categoryModel,
@@ -126,11 +145,26 @@ const Expenses = () => {
         data={expenses}
         totals={totalExpenses}
         label="Expenses"
+        onCategoryClick={handleCategoryClick}
       />
-      <TransactionsTable data={income} totals={totalIncome} label="Income" />
+      <TransactionsTable
+        data={income}
+        totals={totalIncome}
+        label="Income"
+        onCategoryClick={handleCategoryClick}
+      />
       <EnvelopeTable data={envelopeExpenses} totals={envelopeTotals} />
       <OverUnderTable data={overUnder} />
       <NoBudgetTable data={noBudget} />
+
+      {showModal && (
+        <ExpensesModal
+          onClose={() => {
+            setShowModal(false);
+          }}
+          data={modalData}
+        />
+      )}
     </>
   );
 };

@@ -71,6 +71,12 @@ export interface ITransactionsModel {
   ): void;
   getTransactionsYTD(category: string, month: number, year: number): void;
   getSum(dataSet: ITransaction[]): void;
+  filterTo(
+    category: string,
+    month: number,
+    year: number,
+    ytd: boolean
+  ): { sortedResult: ITransaction[]; total: number };
   filterToMonth(budgetMonth: number, budgetYear: number): void;
 }
 
@@ -268,18 +274,18 @@ class TransactionsModel implements ITransactionsModel {
       }
 
       // Calculate differences
-      const catDiff = catBudget - catActualAmount;
-      const catDiffYTD = catBudgetYTD - catActualYTDAmount;
+      const catDiff = catBudget - -1 * catActualAmount;
+      const catDiffYTD = catBudgetYTD - -1 * catActualYTDAmount;
 
       if (catType == "Income") {
         // Add this data to finalIncome
         finalIncome.push({
           fullCategory: theFullCategory,
           category: theCategory,
-          actual: catActualAmount,
+          actual: -1 * catActualAmount,
           budget: catBudget,
           difference: -1 * catDiff,
-          YTD: catActualYTDAmount,
+          YTD: -1 * catActualYTDAmount,
           budgetYTD: catBudgetYTD,
           differenceYTD: -1 * catDiffYTD,
         });
@@ -288,10 +294,10 @@ class TransactionsModel implements ITransactionsModel {
         finalExpenses.push({
           fullCategory: theFullCategory,
           category: theCategory,
-          actual: catActualAmount,
+          actual: -1 * catActualAmount,
           budget: catBudget,
           difference: catDiff,
-          YTD: catActualYTDAmount,
+          YTD: -1 * catActualYTDAmount,
           budgetYTD: catBudgetYTD,
           differenceYTD: catDiffYTD,
         });
@@ -307,6 +313,27 @@ class TransactionsModel implements ITransactionsModel {
     this.totalExpenses = this.calculateTotals(finalExpenses);
     this.totalIncome = this.calculateTotals(finalIncome);
     this.totalEnvelope = this.calculateEnvelopeTotals(finalEnvelope);
+  }
+
+  // Get all transactions in a given category/month/year. This is for the expenses category modal.
+  filterTo(
+    category: string,
+    month: number,
+    year: number,
+    ytd: boolean = false
+  ) {
+    let result: ITransaction[] = [];
+
+    if (ytd) {
+      result = this.getTransactionsYTD(category, month, year);
+    } else {
+      result = this.getTransactionsInMonthYear(category, month, year);
+    }
+
+    const sortedResult = sort(result, "postedOn");
+    const total = this.getSum(sortedResult);
+
+    return { sortedResult, total };
   }
 
   // Get all transactions with no associated budget.

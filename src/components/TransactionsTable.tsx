@@ -10,12 +10,14 @@ export interface ITransactionsTable {
   label: string;
   data: ITransactionsRow[];
   totals: ITransactionsTotals;
+  onCategoryClick: (category: string) => void;
 }
 
 export const TransactionsTable: FC<ITransactionsTable> = ({
   label,
   data,
   totals,
+  onCategoryClick,
 }) => {
   return (
     <div className="overflow-x-auto">
@@ -38,7 +40,14 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
               return (
                 <tr key={item.category}>
                   {/* <td>{buildCategoryLink(item.category, 1, 2024)}</td> */}
-                  <td>{item.category}</td>
+                  <td>
+                    <button
+                      className="btn btn-xs btn-ghost"
+                      onClick={() => onCategoryClick(item.category)}
+                    >
+                      {item.category}
+                    </button>
+                  </td>
                   <td>
                     <FormattedData data={item.budget} />{" "}
                   </td>
