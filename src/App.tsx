@@ -62,6 +62,7 @@ function App() {
       where("year", "==", year)
     );
 
+    // TODO: the query for budget data does not need to be rerun because of a change in the categoryModel.
     const unsubscribe = onSnapshot(
       qBudget,
       (querySnapshot) => {
