@@ -26,6 +26,7 @@ const Budget = () => {
   const handleNewCategory = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
 
+    // TODO: Instead, let the user choose from a dropdown list of already-existing categories.
     try {
       addDoc(collection(db, `user/${user}/budget`), {
         amount: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],

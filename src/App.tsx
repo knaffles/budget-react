@@ -1,10 +1,4 @@
-import {
-  collection,
-  getDocs,
-  onSnapshot,
-  query,
-  where,
-} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -21,6 +15,7 @@ import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
 import { AppContextType } from "./types/types.global";
+import Categories from "./pages/Categories";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -36,11 +31,10 @@ function App() {
 
   // Get Categories.
   useEffect(() => {
-    const fetchData = async () => {
+    const qCategories = query(collection(db, `user/${user}/category`));
+    const unsubscribe = onSnapshot(qCategories, (querySnapshot) => {
       setLoadingCategories(true);
-      const qCategories = query(collection(db, `user/${user}/category`));
-      const querySnapshotCategories = await getDocs(qCategories);
-      const categoriesResult = querySnapshotCategories.docs.map((doc) => {
+      const categoriesResult = querySnapshot.docs.map((doc) => {
         const result = doc.data() as ICategory;
         result.nodeId = doc.id;
         return result;
@@ -49,10 +43,10 @@ function App() {
       const categoriesModel = new CategoryModel(categoriesResult);
       setCategoryModel(categoriesModel);
       setLoadingCategories(false);
-    };
+    });
 
-    fetchData();
-  }, []);
+    return () => unsubscribe();
+  }, [user]);
 
   useEffect(() => {
     if (loadingCategories) {
@@ -121,6 +115,7 @@ function App() {
               <Route index element={<Home />} />
               {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
               <Route path="budget" element={<Budget />} />
+              <Route path="categories" element={<Categories />} />
               <Route path="expenses" element={<Expenses />} />
               <Route path="upload" element={<Upload />} />
 

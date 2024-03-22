@@ -10,6 +10,7 @@
 
 // TODO: Add ability to edit envelope status.
 import { ICategory } from "../types/Category";
+import { sort } from "../lib/utils";
 
 export interface ICategoryModel {
   categories: ICategory[];
@@ -17,6 +18,7 @@ export interface ICategoryModel {
   getChildren(category: string): string[];
   getType(category: string): string;
   isEnvelope(category: string): boolean;
+  getSorted(): ICategory[];
 }
 
 class CategoryModel implements ICategoryModel {
@@ -82,6 +84,10 @@ class CategoryModel implements ICategoryModel {
     } else {
       return false;
     }
+  }
+
+  getSorted() {
+    return sort(this.categories, "name");
   }
 }
 

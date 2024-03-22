@@ -12,6 +12,7 @@ export interface ITransactionsRow {
   YTD: number;
   budgetYTD: number;
   differenceYTD: number;
+  envelope: boolean;
 }
 
 export interface ITransactionsEnvelopeRow {
@@ -69,6 +70,7 @@ export interface ITransactionsModel {
     month: number,
     year: number
   ): void;
+  getTransactionsWithNoBudget(month: number, year: number): void;
   getTransactionsYTD(category: string, month: number, year: number): void;
   getSum(dataSet: ITransaction[]): void;
   filterTo(
@@ -258,8 +260,8 @@ class TransactionsModel implements ITransactionsModel {
         }
 
         // Reset actual and budget amounts for the Expenses table.
-        catActualAmount = catBudget;
-        catActualYTDAmount = catBudgetYTD;
+        catActualAmount = -1 * catBudget;
+        catActualYTDAmount = -1 * catBudgetYTD;
         theFullCategory += " (E)";
 
         // Push to the Envelope table.
@@ -288,6 +290,7 @@ class TransactionsModel implements ITransactionsModel {
           YTD: -1 * catActualYTDAmount,
           budgetYTD: catBudgetYTD,
           differenceYTD: -1 * catDiffYTD,
+          envelope: catEnvelope,
         });
       } else if (catType == "Expense") {
         // Add this data to finalExpenses
@@ -300,6 +303,7 @@ class TransactionsModel implements ITransactionsModel {
           YTD: -1 * catActualYTDAmount,
           budgetYTD: catBudgetYTD,
           differenceYTD: catDiffYTD,
+          envelope: catEnvelope,
         });
       } else {
         // TODO - the category has no type

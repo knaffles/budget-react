@@ -39,6 +39,7 @@ export const BudgetTable: FC<IBudgetTable> = ({
         <thead>
           <tr>
             <th>{firstColLabel}</th>
+            <th>Envelope</th>
             <th>JAN</th>
             <th>FEB</th>
             <th>MAR</th>

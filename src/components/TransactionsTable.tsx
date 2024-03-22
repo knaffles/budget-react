@@ -38,15 +38,20 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
           {data.map((item) => {
             {
               return (
-                <tr key={item.category}>
-                  {/* <td>{buildCategoryLink(item.category, 1, 2024)}</td> */}
+                <tr
+                  key={item.category}
+                  className={item.envelope ? "bg-neutral-content" : ""}
+                >
                   <td>
-                    <button
-                      className="btn btn-xs btn-ghost"
-                      onClick={() => onCategoryClick(item.category)}
-                    >
-                      {item.category}
-                    </button>
+                    <div className="flex justify-between">
+                      <button
+                        className="btn btn-xs btn-ghost"
+                        onClick={() => onCategoryClick(item.category)}
+                      >
+                        {item.category}
+                      </button>
+                      <span>{item.envelope && <em>Envelope</em>}</span>
+                    </div>
                   </td>
                   <td>
                     <FormattedData data={item.budget} />{" "}
