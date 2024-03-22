@@ -248,7 +248,7 @@ class TransactionsModel implements ITransactionsModel {
         );
 
         // Calculate the amount spend YTD
-        const envActualYTD = catActualYTDAmount;
+        const envActualYTD = -1 * catActualYTDAmount;
 
         // Calculat amount of envelope budget remaining.
         const envRemaining = envBudget - envActualYTD;
