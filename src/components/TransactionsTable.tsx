@@ -20,7 +20,7 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
   totals,
   onCategoryClick,
 }) => {
-  const dataSorted = sort(data, "envelope");
+  const dataSorted: ITransactionsRow[] = sort(data, "envelope");
 
   return (
     <div className="overflow-x-auto">
