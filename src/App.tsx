@@ -7,15 +7,15 @@ import { AppContext } from "./hooks/useAppContext";
 import BudgetModel, { IBudgetModel } from "./models/BudgetModel";
 import CategoryModel, { ICategoryModel } from "./models/CategoryModel";
 import Budget from "./pages/Budget";
+import Categories from "./pages/Categories";
 import Expenses from "./pages/Expenses";
 import Home from "./pages/Home";
+import Import from "./pages/Import";
 import NoMatch from "./pages/NoMatch";
-import Upload from "./pages/Upload";
 import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
 import { AppContextType } from "./types/types.global";
-import Categories from "./pages/Categories";
 
 function App() {
   const [year, setYear] = useState(new Date().getFullYear());
@@ -118,7 +118,7 @@ function App() {
               <Route path="budget" element={<Budget />} />
               <Route path="categories" element={<Categories />} />
               <Route path="expenses" element={<Expenses />} />
-              <Route path="upload" element={<Upload />} />
+              <Route path="import" element={<Import />} />
 
               {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit

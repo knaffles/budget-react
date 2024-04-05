@@ -13,6 +13,7 @@ import BudgetModal from "../components/BudgetModal";
 import useAppContext from "../hooks/useAppContext";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
+import Heading from "../components/Heading";
 
 const Budget = () => {
   const { user, budgetData, year } = useAppContext();
@@ -82,7 +83,7 @@ const Budget = () => {
 
   return (
     <>
-      <h1>Budget</h1>
+      <Heading as="h1">Budget</Heading>
 
       <div className="flex justify-end" onSubmit={handleNewCategory}>
         <form className="flex flex-1 gap-2 max-w-sm">

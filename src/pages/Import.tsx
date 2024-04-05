@@ -18,8 +18,9 @@ import {
   generateCategories,
 } from "../services/firebase-actions";
 import { IUploadRaw } from "../types/Upload";
+import Heading from "../components/Heading";
 
-const Upload = () => {
+const Import = () => {
   const { user, year } = useAppContext();
   const [file, setFile] = useState<File | null>(null);
   const handleCallBack = async (result: string) => {
@@ -70,7 +71,7 @@ const Upload = () => {
 
   return (
     <>
-      <h1>Upload Data</h1>
+      <Heading as="h1">Import Data</Heading>
       <form onSubmit={handleSubmit}>
         <label>
           Upload a CSV file with transactions:
@@ -104,4 +105,4 @@ const Upload = () => {
   );
 };
 
-export default Upload;
+export default Import;

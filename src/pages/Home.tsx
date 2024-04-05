@@ -1,6 +1,7 @@
 import budgetObject from "../../data/budget.json";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../services/firebase";
+import Heading from "../components/Heading";
 
 const Home = () => {
   const handleClick = () => {
@@ -19,7 +20,7 @@ const Home = () => {
 
   return (
     <>
-      <h1>Home</h1>
+      <Heading as="h1">Home</Heading>
       <p>This is the homepage.</p>
       <p>
         <button className="btn" onClick={handleClick}>

@@ -33,7 +33,7 @@ const Header = () => {
               <Link to="/expenses">Expenses</Link>
             </li>
             <li>
-              <Link to="/upload">Upload</Link>
+              <Link to="/import">Import</Link>
             </li>
           </ul>
         </nav>

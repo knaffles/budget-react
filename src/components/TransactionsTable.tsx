@@ -5,6 +5,7 @@ import {
 } from "../models/TransactionsModel";
 import FormattedData from "./FormattedData";
 import styles from "./TransactionsTable.module.css";
+import { sort } from "../lib/utils";
 
 export interface ITransactionsTable {
   label: string;
@@ -19,6 +20,8 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
   totals,
   onCategoryClick,
 }) => {
+  const dataSorted = sort(data, "envelope");
+
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["transactions-table"]}`}>
@@ -35,7 +38,7 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
           </tr>
         </thead>
         <tbody>
-          {data.map((item) => {
+          {dataSorted.map((item) => {
             {
               return (
                 <tr

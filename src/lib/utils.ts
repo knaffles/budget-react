@@ -1,7 +1,13 @@
 export const sort = (dataSet: any, sortColumn: string) => {
   const result = dataSet.sort(function (a, b) {
-    const first = a[sortColumn].toUpperCase();
-    const second = b[sortColumn].toUpperCase();
+    const first =
+      typeof a[sortColumn] === "string"
+        ? a[sortColumn].toUpperCase()
+        : a[sortColumn];
+    const second =
+      typeof b[sortColumn] === "string"
+        ? b[sortColumn].toUpperCase()
+        : b[sortColumn];
 
     if (first < second) {
       return -1;

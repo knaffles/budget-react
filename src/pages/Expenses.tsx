@@ -18,6 +18,7 @@ import TransactionsModel, {
 } from "../models/TransactionsModel";
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
+import Heading from "../components/Heading";
 
 // TODO: Verify envelope categories are displaying correctly (positive vs. negative).
 
@@ -131,7 +132,7 @@ const Expenses = () => {
 
   return (
     <>
-      <h1>Expenses & Income</h1>
+      <Heading as="h1">Expenses & Income</Heading>
 
       <label className="flex items-center my-4">
         <div className="label">

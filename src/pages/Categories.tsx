@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import useAppContext from "../hooks/useAppContext";
 import { db } from "../services/firebase";
 import { ICategory } from "../types/Category";
+import Heading from "../components/Heading";
 
 const Budget = () => {
   const { user, loadingCategories, categoryModel } = useAppContext();
@@ -42,12 +43,12 @@ const Budget = () => {
 
   return (
     <>
-      <h1>Categories</h1>
+      <Heading as="h1">Categories</Heading>
 
       <div className="flex justify-end" onSubmit={handleNewCategory}>
         <form className="flex flex-1 gap-2 max-w-sm">
           <input
-            placeholder="Add a category to the budget"
+            placeholder="Add a category"
             className="input input-bordered input-md w-full"
             type="text"
             onChange={(event) => setNewCategory(event?.target.value)}
