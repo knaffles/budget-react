@@ -12,6 +12,7 @@ import Expenses from "./pages/Expenses";
 import Home from "./pages/Home";
 import Import from "./pages/Import";
 import NoMatch from "./pages/NoMatch";
+import Signup from "./pages/Signup";
 import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
@@ -114,6 +115,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Home />} />
+              <Route path="signup" element={<Signup />} />
               {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
               <Route path="budget" element={<Budget />} />
               <Route path="categories" element={<Categories />} />
