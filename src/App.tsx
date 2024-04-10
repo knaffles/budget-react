@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import Layout from "./components/Layout";
-import { AppContext } from "./hooks/useAppContext";
+import AppContext from "./contexts/AppContext";
+import AuthContextProvider from "./contexts/AuthContext";
 import BudgetModel, { IBudgetModel } from "./models/BudgetModel";
 import CategoryModel, { ICategoryModel } from "./models/CategoryModel";
 import Budget from "./pages/Budget";
@@ -107,29 +108,31 @@ function App() {
         budgetData,
       }}
     >
-      <div
-        data-theme={theme}
-        className="p-4 flex flex-col w-full min-h-[100vh]"
-      >
-        <div className="w-full max-w-[90rem] mx-auto mr-auto grow">
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="signup" element={<Signup />} />
-              {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
-              <Route path="budget" element={<Budget />} />
-              <Route path="categories" element={<Categories />} />
-              <Route path="expenses" element={<Expenses />} />
-              <Route path="import" element={<Import />} />
+      <AuthContextProvider>
+        <div
+          data-theme={theme}
+          className="p-4 flex flex-col w-full min-h-[100vh]"
+        >
+          <div className="w-full max-w-[90rem] mx-auto mr-auto grow">
+            <Routes>
+              <Route path="/" element={<Layout />}>
+                <Route index element={<Home />} />
+                <Route path="signup" element={<Signup />} />
+                {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
+                <Route path="budget" element={<Budget />} />
+                <Route path="categories" element={<Categories />} />
+                <Route path="expenses" element={<Expenses />} />
+                <Route path="import" element={<Import />} />
 
-              {/* Using path="*"" means "match anything", so this route
+                {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
                 routes for. */}
-              <Route path="*" element={<NoMatch />} />
-            </Route>
-          </Routes>
+                <Route path="*" element={<NoMatch />} />
+              </Route>
+            </Routes>
+          </div>
         </div>
-      </div>
+      </AuthContextProvider>
     </AppContext.Provider>
   );
 }

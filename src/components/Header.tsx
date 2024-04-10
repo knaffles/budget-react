@@ -3,12 +3,14 @@
 import { Link } from "react-router-dom";
 import { years } from "../data/constants";
 import useAppContext from "../hooks/useAppContext";
+import useLogout from "../hooks/useLogout";
 
 const Header = () => {
   const { setYear, theme, setTheme, year } = useAppContext();
   const handleSelectYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
   };
+  const { error: logoutError, pending: logoutPending, logout } = useLogout();
 
   return (
     <header>
@@ -38,9 +40,30 @@ const Header = () => {
             <li>
               <Link to="/import">Import</Link>
             </li>
+            <li>
+              {!logoutPending && (
+                <button className="btn btn-secondary" onClick={logout}>
+                  Log Out
+                </button>
+              )}
+              {logoutPending && (
+                <button className="btn btn-secondary" disabled>
+                  Log Out
+                </button>
+              )}
+            </li>
           </ul>
         </nav>
       </div>
+
+      <div aria-live="polite">
+        {logoutError && (
+          <p className="alert alert-error">
+            There was an error logging the user out of the application.
+          </p>
+        )}
+      </div>
+
       <div className="flex justify-between">
         <label className="flex items-center">
           <div className="label">

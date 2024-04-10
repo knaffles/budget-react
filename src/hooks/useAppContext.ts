@@ -1,7 +1,5 @@
-import { createContext, useContext } from "react";
-import { AppContextType } from "../types/types.global";
-
-export const AppContext = createContext<AppContextType | null>(null);
+import { useContext } from "react";
+import AppContext from "../contexts/AppContext";
 
 const useAppContext = () => {
   const currentAppContext = useContext(AppContext);

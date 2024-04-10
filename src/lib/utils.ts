@@ -1,5 +1,7 @@
+//eslint-disable-next-line
 export const sort = (dataSet: any, sortColumn: string) => {
-  const result = dataSet.sort(function (a, b) {
+  //eslint-disable-next-line
+  const result = dataSet.sort(function (a: any, b: any) {
     const first =
       typeof a[sortColumn] === "string"
         ? a[sortColumn].toUpperCase()

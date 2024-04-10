@@ -1,3 +1,30 @@
+# React Budget Application
+
+A React-powered application for creating an annual spending budget and for viewing incomes and expenses against that budget. Transaction data is imported from Quicken. This application serves as my platform for learning React.
+
+## Concepts
+
+This app demonstrates the following React and Firebase concepts.
+
+- Routing
+- Custom hooks
+- Context
+- Firebase Authentication
+- Firestore CRUD
+- useReducer
+- useEffect
+- useContext
+
+## TODO
+
+- Persist login state upon refresh.
+- Display data per user and set rules accordingly.
+- Restrict access to pages based on auth state.
+
+---
+
+Original README below...
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -17,12 +44,12 @@ If you are developing a production application, we recommend updating the config
 export default {
   // other rules...
   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
+    ecmaVersion: "latest",
+    sourceType: "module",
+    project: ["./tsconfig.json", "./tsconfig.node.json"],
     tsconfigRootDir: __dirname,
   },
-}
+};
 ```
 
 - Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
