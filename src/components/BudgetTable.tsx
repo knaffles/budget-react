@@ -39,7 +39,8 @@ export const BudgetTable: FC<IBudgetTable> = ({
         <thead>
           <tr>
             <th>{firstColLabel}</th>
-            <th>Envelope</th>
+            {/* TODO - Add lookkup for envelope value. */}
+            {/* <th>Envelope</th> */}
             <th>JAN</th>
             <th>FEB</th>
             <th>MAR</th>

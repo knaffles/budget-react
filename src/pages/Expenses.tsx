@@ -19,18 +19,13 @@ import TransactionsModel, {
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
 import Heading from "../components/Heading";
+import useAuthContext from "../hooks/useAuthContext";
 
 // TODO: Verify envelope categories are displaying correctly (positive vs. negative).
 
 const Expenses = () => {
-  const {
-    user,
-    year,
-    loadingBudget,
-    loadingCategories,
-    budgetModel,
-    categoryModel,
-  } = useAppContext();
+  const { year, loadingBudget, loadingCategories, budgetModel, categoryModel } =
+    useAppContext();
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
   const [month, setMonth] = useState<number>(0);
   const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
@@ -54,6 +49,7 @@ const Expenses = () => {
     sortedResult: [],
     total: 0,
   });
+  const { user } = useAuthContext();
 
   const handleCategoryClick = (category: string) => {
     const categoryData = model.filterTo(category, month, year, false);
@@ -77,7 +73,7 @@ const Expenses = () => {
     setModel(transactionsModel);
 
     const qBudget = query(
-      collection(db, `user/${user}/transaction`),
+      collection(db, `user/${user.uid}/transaction`),
       where("year", "==", year)
     );
 
