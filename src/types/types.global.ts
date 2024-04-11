@@ -25,6 +25,7 @@ export type AppContextType = {
 // TODO: Fix <any> below.
 // See https://stackoverflow.com/questions/59432133/how-to-type-state-and-dispatch-for-usereducer-typescript-and-react
 export type AuthContextType = {
+  authIsReady: boolean;
   user: FirebaseUser | null;
   //eslint-disable-next-line
   dispatch: React.Dispatch<SetStateAction<any>>;
