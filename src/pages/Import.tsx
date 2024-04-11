@@ -97,13 +97,13 @@ const Import = () => {
       </form>
 
       <button
-        onClick={() => generateCategories(user)}
+        onClick={() => generateCategories(user.uid)}
         className="btn btn-primary"
       >
         Generate categories
       </button>
       <button
-        onClick={() => generateBudget(user, year)}
+        onClick={() => generateBudget(user.uid, year)}
         className="btn btn-primary"
       >
         Generate budget

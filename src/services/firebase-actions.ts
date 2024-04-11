@@ -1,9 +1,9 @@
 import { db } from "./firebase";
 import { query, getDocs, collection, where, addDoc } from "firebase/firestore";
 
-export const generateCategories = async (user: string) => {
+export const generateCategories = async (uid: string) => {
   // Loop through all transactions and get a unique list of all categories.
-  const qTransactions = query(collection(db, `user/${user}/transaction`));
+  const qTransactions = query(collection(db, `user/${uid}/transaction`));
   const querySnapshotTransactions = await getDocs(qTransactions);
   const allCategories = querySnapshotTransactions.docs.map((doc) => {
     return doc.data().category;
@@ -18,14 +18,14 @@ export const generateCategories = async (user: string) => {
   uniqueCategories.forEach(async (category) => {
     // See if the category already exists.
     const qCategories = query(
-      collection(db, `user/${user}/category`),
+      collection(db, `user/${uid}/category`),
       where("name", "==", category)
     );
 
     const querySnapshotCategories = await getDocs(qCategories);
     if (querySnapshotCategories.empty) {
       // Create the category.
-      await addDoc(collection(db, `user/${user}/category`), {
+      await addDoc(collection(db, `user/${uid}/category`), {
         name: category,
         envelope: false,
       });
@@ -33,16 +33,16 @@ export const generateCategories = async (user: string) => {
   });
 };
 
-export const generateBudget = async (user: string, year: number) => {
+export const generateBudget = async (uid: string, year: number) => {
   // Get all categories.
-  const allCategories = await getDocs(collection(db, `user/${user}/category`));
+  const allCategories = await getDocs(collection(db, `user/${uid}/category`));
 
   // Loop through each category.
 
   allCategories.forEach(async (doc) => {
     const category = doc.data().name;
     const qBudget = query(
-      collection(db, `user/${user}/budget`),
+      collection(db, `user/${uid}/budget`),
       where("year", "==", year),
       where("category", "==", category)
     );
@@ -52,7 +52,7 @@ export const generateBudget = async (user: string, year: number) => {
     // Check if a budget entry exists for the category in the given year.
     if (budgetSnapshot.empty) {
       // If not, generate a new budget entry.
-      await addDoc(collection(db, `user/${user}/budget`), {
+      await addDoc(collection(db, `user/${uid}/budget`), {
         amount: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         category: category,
         year: year,

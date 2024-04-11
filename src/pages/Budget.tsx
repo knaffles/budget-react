@@ -8,15 +8,17 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { useState } from "react";
-import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
 import BudgetModal from "../components/BudgetModal";
+import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
+import Heading from "../components/Heading";
 import useAppContext from "../hooks/useAppContext";
+import useAuthContext from "../hooks/useAuthContext";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
-import Heading from "../components/Heading";
 
 const Budget = () => {
-  const { user, budgetData, year } = useAppContext();
+  const { user } = useAuthContext();
+  const { budgetData, year } = useAppContext();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");
@@ -29,7 +31,7 @@ const Budget = () => {
 
     // TODO: Instead, let the user choose from a dropdown list of already-existing categories.
     try {
-      addDoc(collection(db, `user/${user}/budget`), {
+      addDoc(collection(db, `user/${user.uid}/budget`), {
         amount: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         category: newCategory,
         year: year,
@@ -52,7 +54,7 @@ const Budget = () => {
 
   const handleCellUpdate = async (budgetValue: number) => {
     try {
-      const docRef = doc(db, `user/${user}/budget/${modalNodeId}`);
+      const docRef = doc(db, `user/${user.uid}/budget/${modalNodeId}`);
       const docSnap = await getDoc(docRef);
       const amount = docSnap.data()?.amount;
       amount[modalMonth] = budgetValue;
@@ -64,7 +66,7 @@ const Budget = () => {
 
   const handleYearUpdate = async (budgetValue: number) => {
     try {
-      const docRef = doc(db, `user/${user}/budget/${modalNodeId}`);
+      const docRef = doc(db, `user/${user.uid}/budget/${modalNodeId}`);
       const amount = Array(12).fill(budgetValue);
       await updateDoc(docRef, { amount: amount });
     } catch (error) {
@@ -74,7 +76,7 @@ const Budget = () => {
 
   const handleDelete = async (nodeId: IBudget["nodeId"]) => {
     try {
-      const docRef = doc(db, `user/${user}/budget/${nodeId}`);
+      const docRef = doc(db, `user/${user.uid}/budget/${nodeId}`);
       await deleteDoc(docRef);
     } catch (error) {
       console.log(error);

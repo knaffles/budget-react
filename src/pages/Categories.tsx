@@ -4,9 +4,11 @@ import useAppContext from "../hooks/useAppContext";
 import { db } from "../services/firebase";
 import { ICategory } from "../types/Category";
 import Heading from "../components/Heading";
+import useAuthContext from "../hooks/useAuthContext";
 
 const Budget = () => {
-  const { user, loadingCategories, categoryModel } = useAppContext();
+  const { user } = useAuthContext();
+  const { loadingCategories, categoryModel } = useAppContext();
   const [sortedCategories, setSortedCategories] = useState<ICategory[]>([]);
   const [newCategory, setNewCategory] = useState<string>("");
 
@@ -15,7 +17,7 @@ const Budget = () => {
     event.preventDefault();
 
     try {
-      addDoc(collection(db, `user/${user}/category`), {
+      addDoc(collection(db, `user/${user.uid}/category`), {
         name: newCategory,
         envelope: false,
       });
@@ -34,7 +36,7 @@ const Budget = () => {
 
   const handleClick = async (nodeId: string, checked: boolean) => {
     try {
-      const docRef = doc(db, `user/${user}/category/${nodeId}`);
+      const docRef = doc(db, `user/${user.uid}/category/${nodeId}`);
       await updateDoc(docRef, { envelope: checked });
     } catch (error) {
       console.log(error);
