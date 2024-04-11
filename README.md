@@ -17,10 +17,13 @@ This app demonstrates the following React and Firebase concepts.
 
 ## TODO
 
-- Persist login state upon refresh.
-- Display data per user and set rules accordingly.
-- Restrict access to pages based on auth state.
+- Display data per user and set rules accordingly. Update all instances of read/writes to use the logged in users' uid.
 - Add progress indicator to upload process.
+
+## COMPLETE
+
+- Persist login state upon refresh.
+- Restrict access to pages based on auth state.
 
 ---
 
