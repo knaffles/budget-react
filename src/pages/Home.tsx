@@ -2,7 +2,6 @@ import budgetObject from "../../data/budget.json";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../services/firebase";
 import Heading from "../components/Heading";
-import { Link } from "react-router-dom";
 
 const Home = () => {
   const handleClick = () => {
@@ -23,9 +22,7 @@ const Home = () => {
     <>
       <Heading as="h1">Home</Heading>
       <div className="prose">
-        <p>
-          Get started by <Link to="/signup">creating an account</Link>.
-        </p>
+        <p>Hello. Welcome to the budget app.</p>
       </div>
 
       <details className="collapse collapse-arrow bg-base-200">

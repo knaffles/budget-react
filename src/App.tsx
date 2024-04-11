@@ -1,20 +1,11 @@
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import AllRoutes from "./AllRoutes";
 import "./App.css";
-import Layout from "./components/Layout";
 import AppContext from "./contexts/AppContext";
 import AuthContextProvider from "./contexts/AuthContext";
 import BudgetModel, { IBudgetModel } from "./models/BudgetModel";
 import CategoryModel, { ICategoryModel } from "./models/CategoryModel";
-import Budget from "./pages/Budget";
-import Categories from "./pages/Categories";
-import Expenses from "./pages/Expenses";
-import Home from "./pages/Home";
-import Import from "./pages/Import";
-import Login from "./pages/Login";
-import NoMatch from "./pages/NoMatch";
-import Signup from "./pages/Signup";
 import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
@@ -32,6 +23,10 @@ function App() {
   );
   const user = "user1";
 
+  // TODO - Move all of this logic for fetching category and transaction data into a hook. This component needs to be much cleaner.
+  {
+    /* TODO: Add additional context so that budget and category data are not loaded on all routes. */
+  }
   // Get Categories.
   useEffect(() => {
     const qCategories = query(collection(db, `user/${user}/category`));
@@ -115,23 +110,7 @@ function App() {
           className="p-4 flex flex-col w-full min-h-[100vh]"
         >
           <div className="w-full max-w-[90rem] mx-auto mr-auto grow">
-            <Routes>
-              <Route path="/" element={<Layout />}>
-                <Route index element={<Home />} />
-                <Route path="signup" element={<Signup />} />
-                {/* TODO: Add some additional context so that budget and category data are not passed to the upload page. */}
-                <Route path="budget" element={<Budget />} />
-                <Route path="categories" element={<Categories />} />
-                <Route path="expenses" element={<Expenses />} />
-                <Route path="import" element={<Import />} />
-                <Route path="login" element={<Login />} />
-
-                {/* Using path="*"" means "match anything", so this route
-                acts like a catch-all for URLs that we don't have explicit
-                routes for. */}
-                <Route path="*" element={<NoMatch />} />
-              </Route>
-            </Routes>
+            <AllRoutes />
           </div>
         </div>
       </AuthContextProvider>

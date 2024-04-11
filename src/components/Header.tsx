@@ -24,9 +24,11 @@ const Header = () => {
         </div>
         <nav className="flex-none">
           <ul className="menu menu-horizontal px-1">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
+            {user && (
+              <li>
+                <Link to="/">Home</Link>
+              </li>
+            )}
 
             {!user && (
               <>
