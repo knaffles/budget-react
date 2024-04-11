@@ -19,9 +19,13 @@ import {
 } from "../services/firebase-actions";
 import { IUploadRaw } from "../types/Upload";
 import Heading from "../components/Heading";
+import useAuthContext from "../hooks/useAuthContext";
+
+// TODO: Fix user type.
 
 const Import = () => {
-  const { user, year } = useAppContext();
+  const { year } = useAppContext();
+  const { user } = useAuthContext();
   const [file, setFile] = useState<File | null>(null);
   const handleCallBack = async (result: string) => {
     const parsedResult = papa.parse(result, {
@@ -35,7 +39,7 @@ const Import = () => {
 
     // First, purge existing transactions for the selected year.
     const qDelete = query(
-      collection(db, `user/${user}/transaction`),
+      collection(db, `user/${user.uid}/transaction`),
       where("year", "==", year)
     );
 
@@ -52,7 +56,10 @@ const Import = () => {
     transactions.forEach(async (transaction) => {
       // Only add docs for the current year.
       if (transaction.year === year) {
-        await addDoc(collection(db, `user/${user}/transaction`), transaction);
+        await addDoc(
+          collection(db, `user/${user.uid}/transaction`),
+          transaction
+        );
       }
     });
 

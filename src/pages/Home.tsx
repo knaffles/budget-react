@@ -2,19 +2,22 @@ import budgetObject from "../../data/budget.json";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../services/firebase";
 import Heading from "../components/Heading";
+import useAuthContext from "../hooks/useAuthContext";
 
 const Home = () => {
+  const { user } = useAuthContext();
+
   const handleClick = () => {
     const budget = budgetObject.budget;
     budget.forEach(async (value) => {
-      await addDoc(collection(db, "user/user1/budget"), value);
+      await addDoc(collection(db, `user/${user?.uid}/budget`), value);
     });
   };
 
   const handleTransactionsClick = () => {
     const transactions = budgetObject.transaction;
     transactions.forEach(async (value) => {
-      await addDoc(collection(db, "user/user1/transaction"), value);
+      await addDoc(collection(db, `user/${user?.uid}/transaction`), value);
     });
   };
 
@@ -30,18 +33,13 @@ const Home = () => {
           Development content
         </summary>
         <div className="collapse-content">
-          <div className="join">
-            <button className="btn btn-neutral join-item" onClick={handleClick}>
-              Import budget data
-            </button>
-
-            <button
-              className="btn btn-neutral join-item"
-              onClick={handleTransactionsClick}
-            >
-              Import transactions data
-            </button>
-          </div>
+          <button className="btn btn-neutral" onClick={handleClick}>
+            Import sample budget data
+          </button>
+          &nbsp;&nbsp;
+          <button className="btn btn-neutral" onClick={handleTransactionsClick}>
+            Import sample transactions data
+          </button>
         </div>
       </details>
     </>

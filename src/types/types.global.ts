@@ -6,7 +6,6 @@ import { ICategoryModel } from "../models/CategoryModel";
 export type AppContextType = {
   year: number;
   setYear: (year: number) => void;
-  user: string;
   theme: string;
   setTheme: (theme: string) => void;
   categoryModel: ICategoryModel;
