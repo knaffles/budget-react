@@ -1,6 +1,8 @@
 # React Budget Application
 
-A React-powered application for creating an annual spending budget and for viewing incomes and expenses against that budget. Transaction data is imported from Quicken. This application serves as my platform for learning React.
+<span style="color:red">**THIS PROJECT IS A WORK IN PROGRESS**</span>
+
+A React-powered application for creating an annual spending budget and for viewing incomes and expenses against that budget. Transaction data is imported from Quicken. This application also serves as my platform for learning React.
 
 ## Concepts
 
@@ -19,15 +21,26 @@ This app demonstrates the following React and Firebase concepts.
 
 - Display data per user and set rules accordingly. Update all instances of read/writes to use the logged in users' uid. Fix associated typescript errors where user may be null (run `npm run build`)
 - Add progress indicator to upload process.
+- Refactor initial loading of budget and category data.
 
 ## COMPLETE
 
 - Persist login state upon refresh.
 - Restrict access to pages based on auth state.
 
----
+For reference, the original README is included below...
 
-Original README below...
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+---
 
 # React + TypeScript + Vite
 
