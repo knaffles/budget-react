@@ -20,6 +20,7 @@ This app demonstrates the following React and Firebase concepts.
 - Persist login state upon refresh.
 - Display data per user and set rules accordingly.
 - Restrict access to pages based on auth state.
+- Add progress indicator to upload process.
 
 ---
 

@@ -3,6 +3,7 @@
 import { Link } from "react-router-dom";
 import { years } from "../data/constants";
 import useAppContext from "../hooks/useAppContext";
+import useAuthContext from "../hooks/useAuthContext";
 import useLogout from "../hooks/useLogout";
 
 const Header = () => {
@@ -11,6 +12,7 @@ const Header = () => {
     setYear(parseInt(event.target.value));
   };
   const { error: logoutError, pending: logoutPending, logout } = useLogout();
+  const { user } = useAuthContext();
 
   return (
     <header>
@@ -25,33 +27,47 @@ const Header = () => {
             <li>
               <Link to="/">Home</Link>
             </li>
-            <li>
-              <Link to="/signup">Sign Up</Link>
-            </li>
-            <li>
-              <Link to="/categories">Categories</Link>
-            </li>
-            <li>
-              <Link to="/budget">Budget</Link>
-            </li>
-            <li>
-              <Link to="/expenses">Expenses</Link>
-            </li>
-            <li>
-              <Link to="/import">Import</Link>
-            </li>
-            <li>
-              {!logoutPending && (
-                <button className="btn btn-secondary" onClick={logout}>
-                  Log Out
-                </button>
-              )}
-              {logoutPending && (
-                <button className="btn btn-secondary" disabled>
-                  Log Out
-                </button>
-              )}
-            </li>
+
+            {!user && (
+              <>
+                <li>
+                  <Link to="/signup">Sign Up</Link>
+                </li>
+                <li>
+                  <Link to="/login">Log In</Link>
+                </li>
+              </>
+            )}
+
+            {user && (
+              <>
+                <li>
+                  <Link to="/categories">Categories</Link>
+                </li>
+                <li>
+                  <Link to="/budget">Budget</Link>
+                </li>
+                <li>
+                  <Link to="/expenses">Expenses</Link>
+                </li>
+                <li>
+                  <Link to="/import">Import</Link>
+                </li>
+                <li>
+                  {!logoutPending && (
+                    <button className="btn btn-secondary" onClick={logout}>
+                      Log Out
+                    </button>
+                  )}
+                  {logoutPending && (
+                    <button className="btn btn-secondary" disabled>
+                      Log Out
+                    </button>
+                  )}
+                </li>
+                <li>{user.email}</li>
+              </>
+            )}
           </ul>
         </nav>
       </div>
@@ -64,39 +80,41 @@ const Header = () => {
         )}
       </div>
 
-      <div className="flex justify-between">
-        <label className="flex items-center">
-          <div className="label">
-            <span className="label-text">Select the year:</span>
-          </div>
-          <select
-            className="select select-bordered select-sm"
-            onChange={handleSelectYear}
-            value={year}
-          >
-            {years.map((year) => {
-              return (
-                <option value={year} key={year}>
-                  {year}
-                </option>
-              );
-            })}
-          </select>
-        </label>
+      {user && (
+        <div className="flex justify-between">
+          <label className="flex items-center">
+            <div className="label">
+              <span className="label-text">Select the year:</span>
+            </div>
+            <select
+              className="select select-bordered select-sm"
+              onChange={handleSelectYear}
+              value={year}
+            >
+              {years.map((year) => {
+                return (
+                  <option value={year} key={year}>
+                    {year}
+                  </option>
+                );
+              })}
+            </select>
+          </label>
 
-        <button
-          className="btn btn-primary"
-          onClick={() => {
-            if (theme === "light") {
-              setTheme("dark");
-            } else {
-              setTheme("light");
-            }
-          }}
-        >
-          Switch theme
-        </button>
-      </div>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              if (theme === "light") {
+                setTheme("dark");
+              } else {
+                setTheme("light");
+              }
+            }}
+          >
+            Switch theme
+          </button>
+        </div>
+      )}
     </header>
   );
 };
