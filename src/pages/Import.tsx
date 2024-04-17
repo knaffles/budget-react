@@ -92,7 +92,7 @@ const Import = () => {
           />
         </label>
         <button type="submit" className="btn btn-primary">
-          Upload
+          Import
         </button>
       </form>
 

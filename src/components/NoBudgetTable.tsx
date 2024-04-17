@@ -5,9 +5,13 @@ import FormattedData from "./FormattedData";
 
 export interface INoBudgetTable {
   data: ITransactionsNoBudgetRow[];
+  onCategoryClick: (category: string, ytd: boolean) => void;
 }
 
-export const NoBudgetTable: FC<INoBudgetTable> = ({ data }) => {
+export const NoBudgetTable: FC<INoBudgetTable> = ({
+  data,
+  onCategoryClick,
+}) => {
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["budget-table"]}`}>
@@ -23,8 +27,15 @@ export const NoBudgetTable: FC<INoBudgetTable> = ({ data }) => {
             {
               return (
                 <tr key={item.category}>
-                  {/* <td>{buildCategoryLink(item.category, 1, 2024)}</td> */}
-                  <td>{item.fullCategory}</td>
+                  <td>
+                    <button
+                      className="btn btn-xs btn-ghost"
+                      onClick={() => onCategoryClick(item.category, false)}
+                    >
+                      {item.fullCategory}
+                    </button>
+                  </td>
+
                   <td>
                     <FormattedData data={item.sum} />
                   </td>

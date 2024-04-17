@@ -51,8 +51,8 @@ const Expenses = () => {
   });
   const { user } = useAuthContext();
 
-  const handleCategoryClick = (category: string) => {
-    const categoryData = model.filterTo(category, month, year, false);
+  const handleCategoryClick = (category: string, ytd: boolean = false) => {
+    const categoryData = model.filterTo(category, month, year, ytd);
     setShowModal(true);
     setModalData(categoryData);
   };
@@ -163,9 +163,13 @@ const Expenses = () => {
         label="Income"
         onCategoryClick={handleCategoryClick}
       />
-      <EnvelopeTable data={envelopeExpenses} totals={envelopeTotals} />
+      <EnvelopeTable
+        data={envelopeExpenses}
+        totals={envelopeTotals}
+        onCategoryClick={handleCategoryClick}
+      />
       <OverUnderTable data={overUnder} />
-      <NoBudgetTable data={noBudget} />
+      <NoBudgetTable data={noBudget} onCategoryClick={handleCategoryClick} />
 
       {showModal && (
         <ExpensesModal

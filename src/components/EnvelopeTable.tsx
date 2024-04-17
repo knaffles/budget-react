@@ -9,9 +9,14 @@ import FormattedData from "./FormattedData";
 export interface IEnvelopeTable {
   data: ITransactionsEnvelopeRow[];
   totals: ITransactionsEnvelopeTotals;
+  onCategoryClick: (category: string, ytd: boolean) => void;
 }
 
-export const EnvelopeTable: FC<IEnvelopeTable> = ({ data, totals }) => {
+export const EnvelopeTable: FC<IEnvelopeTable> = ({
+  data,
+  totals,
+  onCategoryClick,
+}) => {
   return (
     <div className="overflow-x-auto">
       <table className={`table table-xs ${styles["budget-table"]}`}>
@@ -30,8 +35,14 @@ export const EnvelopeTable: FC<IEnvelopeTable> = ({ data, totals }) => {
             {
               return (
                 <tr key={item.category}>
-                  {/* <td>{buildCategoryLink(item.category, 1, 2024)}</td> */}
-                  <td>{item.category}</td>
+                  <td>
+                    <button
+                      className="btn btn-xs btn-ghost"
+                      onClick={() => onCategoryClick(item.category, true)}
+                    >
+                      {item.category}
+                    </button>
+                  </td>
                   <td>
                     <FormattedData data={item.budget} />
                   </td>

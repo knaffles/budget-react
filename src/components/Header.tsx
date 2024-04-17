@@ -23,7 +23,7 @@ const Header = () => {
           </Link>
         </div>
         <nav className="flex-none">
-          <ul className="menu menu-horizontal px-1">
+          <ul className="menu menu-horizontal px-1 items-center">
             {user && (
               <li>
                 <Link to="/">Home</Link>
@@ -55,7 +55,8 @@ const Header = () => {
                 <li>
                   <Link to="/import">Import</Link>
                 </li>
-                <li>
+                <li className="ml-4">{user.email}</li>
+                <li className="ml-4">
                   {!logoutPending && (
                     <button className="btn btn-secondary" onClick={logout}>
                       Log Out
@@ -67,7 +68,6 @@ const Header = () => {
                     </button>
                   )}
                 </li>
-                <li>{user.email}</li>
               </>
             )}
           </ul>

@@ -11,7 +11,7 @@ export interface ITransactionsTable {
   label: string;
   data: ITransactionsRow[];
   totals: ITransactionsTotals;
-  onCategoryClick: (category: string) => void;
+  onCategoryClick: (category: string, ytd: boolean) => void;
 }
 
 export const TransactionsTable: FC<ITransactionsTable> = ({
@@ -43,17 +43,25 @@ export const TransactionsTable: FC<ITransactionsTable> = ({
               return (
                 <tr
                   key={item.category}
-                  className={item.envelope ? "bg-neutral-content" : ""}
+                  className={item.envelope ? "bg-base-300" : ""}
                 >
                   <td>
-                    <div className="flex justify-between">
+                    <div className="flex items-center">
                       <button
                         className="btn btn-xs btn-ghost"
-                        onClick={() => onCategoryClick(item.category)}
+                        onClick={() => onCategoryClick(item.category, false)}
                       >
                         {item.category}
                       </button>
-                      <span>{item.envelope && <em>Envelope</em>}</span>
+                      <button
+                        className="btn btn-xs btn-ghost"
+                        onClick={() => onCategoryClick(item.category, true)}
+                      >
+                        (YTD)
+                      </button>
+                      <span className="ml-auto">
+                        {item.envelope && <em>Envelope</em>}
+                      </span>
                     </div>
                   </td>
                   <td>
