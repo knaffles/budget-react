@@ -19,7 +19,6 @@ This app demonstrates the following React and Firebase concepts.
 
 ## TODO
 
-- Display data per user and set rules accordingly. Update all instances of read/writes to use the logged in users' uid. Fix associated typescript errors where user may be null (run `npm run build`)
 - Add progress indicator to upload process.
 - Refactor initial loading of budget and category data.
 

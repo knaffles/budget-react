@@ -39,7 +39,7 @@ const Import = () => {
 
     // First, purge existing transactions for the selected year.
     const qDelete = query(
-      collection(db, `user/${user.uid}/transaction`),
+      collection(db, `user/${user?.uid}/transaction`),
       where("year", "==", year)
     );
 
@@ -57,7 +57,7 @@ const Import = () => {
       // Only add docs for the current year.
       if (transaction.year === year) {
         await addDoc(
-          collection(db, `user/${user.uid}/transaction`),
+          collection(db, `user/${user?.uid}/transaction`),
           transaction
         );
       }
@@ -97,13 +97,13 @@ const Import = () => {
       </form>
 
       <button
-        onClick={() => generateCategories(user.uid)}
+        onClick={() => generateCategories(user ? user.uid : "")}
         className="btn btn-primary"
       >
         Generate categories
       </button>
       <button
-        onClick={() => generateBudget(user.uid, year)}
+        onClick={() => generateBudget(user ? user.uid : "", year)}
         className="btn btn-primary"
       >
         Generate budget

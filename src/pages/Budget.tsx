@@ -30,8 +30,9 @@ const Budget = () => {
     event.preventDefault();
 
     // TODO: Instead, let the user choose from a dropdown list of already-existing categories.
+    // TODO: We have a check in AllRoutes.tsx to ensure user is not null before getting to this page. But we still have to use a conditional chain here on the user object for the linter to be happy. Not sure if there's a better way.
     try {
-      addDoc(collection(db, `user/${user.uid}/budget`), {
+      addDoc(collection(db, `user/${user?.uid}/budget`), {
         amount: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         category: newCategory,
         year: year,
@@ -54,7 +55,7 @@ const Budget = () => {
 
   const handleCellUpdate = async (budgetValue: number) => {
     try {
-      const docRef = doc(db, `user/${user.uid}/budget/${modalNodeId}`);
+      const docRef = doc(db, `user/${user?.uid}/budget/${modalNodeId}`);
       const docSnap = await getDoc(docRef);
       const amount = docSnap.data()?.amount;
       amount[modalMonth] = budgetValue;
@@ -66,7 +67,7 @@ const Budget = () => {
 
   const handleYearUpdate = async (budgetValue: number) => {
     try {
-      const docRef = doc(db, `user/${user.uid}/budget/${modalNodeId}`);
+      const docRef = doc(db, `user/${user?.uid}/budget/${modalNodeId}`);
       const amount = Array(12).fill(budgetValue);
       await updateDoc(docRef, { amount: amount });
     } catch (error) {
@@ -76,7 +77,7 @@ const Budget = () => {
 
   const handleDelete = async (nodeId: IBudget["nodeId"]) => {
     try {
-      const docRef = doc(db, `user/${user.uid}/budget/${nodeId}`);
+      const docRef = doc(db, `user/${user?.uid}/budget/${nodeId}`);
       await deleteDoc(docRef);
     } catch (error) {
       console.log(error);

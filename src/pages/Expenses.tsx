@@ -73,7 +73,7 @@ const Expenses = () => {
     setModel(transactionsModel);
 
     const qBudget = query(
-      collection(db, `user/${user.uid}/transaction`),
+      collection(db, `user/${user?.uid}/transaction`),
       where("year", "==", year)
     );
 
