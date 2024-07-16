@@ -27,6 +27,10 @@ This app demonstrates the following React and Firebase concepts.
 - Persist login state upon refresh.
 - Restrict access to pages based on auth state.
 
+## LOCAL DEVELOPMENT
+
+- Run `nvm use` and `npm run dev`
+
 For reference, the original README is included below...
 
 <br />
