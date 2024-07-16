@@ -2,12 +2,12 @@
 
 import { Link } from "react-router-dom";
 import { years } from "../data/constants";
-import useAppContext from "../hooks/useAppContext";
+import useGlobalContext from "../hooks/useGlobalContext";
 import useAuthContext from "../hooks/useAuthContext";
 import useLogout from "../hooks/useLogout";
 
 const Header = () => {
-  const { setYear, theme, setTheme, year } = useAppContext();
+  const { setYear, theme, setTheme, year } = useGlobalContext();
   const handleSelectYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
   };

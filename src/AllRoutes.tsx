@@ -15,21 +15,18 @@ const AllRoutes = () => {
   const { user } = useAuthContext();
 
   return (
-    <DataWrapper>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          {/* Not logged in */}
-          <Route
-            path="signup"
-            element={user ? <Navigate to="/" /> : <Signup />}
-          />
-          <Route
-            path="login"
-            element={user ? <Navigate to="/" /> : <Login />}
-          />
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        {/* Not logged in */}
+        <Route
+          path="signup"
+          element={user ? <Navigate to="/" /> : <Signup />}
+        />
+        <Route path="login" element={user ? <Navigate to="/" /> : <Login />} />
 
-          {/* Logged in */}
+        {/* Logged in */}
 
+        <Route element={<DataWrapper />}>
           <Route index element={!user ? <Navigate to="/login" /> : <Home />} />
           <Route
             path="budget"
@@ -47,14 +44,14 @@ const AllRoutes = () => {
             path="import"
             element={!user ? <Navigate to="/login" /> : <Import />}
           />
+        </Route>
 
-          {/* Using path="*"" means "match anything", so this route
+        {/* Using path="*"" means "match anything", so this route
     acts like a catch-all for URLs that we don't have explicit
     routes for. */}
-          <Route path="*" element={<NoMatch />} />
-        </Route>
-      </Routes>
-    </DataWrapper>
+        <Route path="*" element={<NoMatch />} />
+      </Route>
+    </Routes>
   );
 };
 export default AllRoutes;

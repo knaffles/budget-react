@@ -12,13 +12,15 @@ import BudgetModal from "../components/BudgetModal";
 import { BudgetDiff, BudgetTable } from "../components/BudgetTable";
 import Heading from "../components/Heading";
 import useAppContext from "../hooks/useAppContext";
+import useGlobalContext from "../hooks/useGlobalContext";
 import useAuthContext from "../hooks/useAuthContext";
 import { db } from "../services/firebase";
 import { IBudget } from "../types/Budget";
 
 const Budget = () => {
   const { user } = useAuthContext();
-  const { budgetData, year } = useAppContext();
+  const { budgetData } = useAppContext();
+  const { year } = useGlobalContext();
   const [showModal, setShowModal] = useState<boolean>(false);
   const [modalInitialValue, setModalInitialValue] = useState<number>(0);
   const [modalNodeId, setModalNodeId] = useState<string>("");

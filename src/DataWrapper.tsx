@@ -1,5 +1,5 @@
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { FC, ReactNode, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import "./App.css";
 import AppContext from "./contexts/AppContext";
 import useAuthContext from "./hooks/useAuthContext";
@@ -9,14 +9,10 @@ import { db } from "./services/firebase";
 import { IBudget } from "./types/Budget";
 import { ICategory } from "./types/Category";
 import { AppContextType } from "./types/types.global";
+import { Outlet } from "react-router";
+import useGlobalContext from "./hooks/useGlobalContext";
 
-interface IDataWrapper {
-  children: ReactNode | null;
-}
-
-const DataWrapper: FC<IDataWrapper> = ({ children }) => {
-  const [year, setYear] = useState(new Date().getFullYear());
-  const [theme, setTheme] = useState<string>("light");
+const DataWrapper: FC = () => {
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [loadingBudget, setLoadingBudget] = useState(true);
   const [categoryModel, setCategoryModel] = useState({} as ICategoryModel);
@@ -25,6 +21,7 @@ const DataWrapper: FC<IDataWrapper> = ({ children }) => {
     {} as AppContextType["budgetData"]
   );
   const { user } = useAuthContext();
+  const { year } = useGlobalContext();
 
   // TODO - Move all of this logic for fetching category and transaction data into a hook. This component needs to be much cleaner.
   {
@@ -101,10 +98,6 @@ const DataWrapper: FC<IDataWrapper> = ({ children }) => {
   return (
     <AppContext.Provider
       value={{
-        year,
-        setYear,
-        theme,
-        setTheme,
         budgetModel,
         categoryModel,
         loadingCategories,
@@ -112,14 +105,7 @@ const DataWrapper: FC<IDataWrapper> = ({ children }) => {
         budgetData,
       }}
     >
-      <div
-        data-theme={theme}
-        className="p-4 flex flex-col w-full min-h-[100vh]"
-      >
-        <div className="w-full max-w-[90rem] mx-auto mr-auto grow">
-          {children}
-        </div>
-      </div>
+      <Outlet />
     </AppContext.Provider>
   );
 };

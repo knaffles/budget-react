@@ -4,10 +4,6 @@ import { IBudgetModel, IBudgetRowEntry, ITotals } from "../models/BudgetModel";
 import { ICategoryModel } from "../models/CategoryModel";
 
 export type AppContextType = {
-  year: number;
-  setYear: (year: number) => void;
-  theme: string;
-  setTheme: (theme: string) => void;
   categoryModel: ICategoryModel;
   budgetModel: IBudgetModel;
   loadingCategories: boolean;
@@ -28,4 +24,11 @@ export type AuthContextType = {
   user: FirebaseUser | null;
   //eslint-disable-next-line
   dispatch: React.Dispatch<SetStateAction<any>>;
+};
+
+export type GlobalContextType = {
+  year: number;
+  setYear: (year: number) => void;
+  theme: string;
+  setTheme: (theme: string) => void;
 };

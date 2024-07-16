@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import papa from "papaparse";
 import { useState } from "react";
-import useAppContext from "../hooks/useAppContext";
+import useGlobalContext from "../hooks/useGlobalContext";
 import { preProcessUpload, processUpload } from "../lib/uploads";
 import { db } from "../services/firebase";
 import {
@@ -24,7 +24,7 @@ import useAuthContext from "../hooks/useAuthContext";
 // TODO: Fix user type.
 
 const Import = () => {
-  const { year } = useAppContext();
+  const { year } = useGlobalContext();
   const { user } = useAuthContext();
   const [file, setFile] = useState<File | null>(null);
   const handleCallBack = async (result: string) => {

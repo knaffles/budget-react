@@ -2,11 +2,14 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { EnvelopeTable } from "../components/EnvelopeTable";
 import ExpensesModal from "../components/ExpensesModal";
+import Heading from "../components/Heading";
 import { NoBudgetTable } from "../components/NoBudgetTable";
 import { OverUnderTable } from "../components/OverUnderTable";
 import { TransactionsTable } from "../components/TransactionsTable";
 import { months } from "../data/constants";
 import useAppContext from "../hooks/useAppContext";
+import useAuthContext from "../hooks/useAuthContext";
+import useGlobalContext from "../hooks/useGlobalContext";
 import TransactionsModel, {
   ITransactionsEnvelopeRow,
   ITransactionsEnvelopeTotals,
@@ -18,14 +21,13 @@ import TransactionsModel, {
 } from "../models/TransactionsModel";
 import { db } from "../services/firebase";
 import { ITransaction } from "../types/Transaction";
-import Heading from "../components/Heading";
-import useAuthContext from "../hooks/useAuthContext";
 
 // TODO: Verify envelope categories are displaying correctly (positive vs. negative).
 
 const Expenses = () => {
-  const { year, loadingBudget, loadingCategories, budgetModel, categoryModel } =
+  const { loadingBudget, loadingCategories, budgetModel, categoryModel } =
     useAppContext();
+  const { year } = useGlobalContext();
   const [loadingTransactions, setLoadingTransactions] = useState<boolean>(true);
   const [month, setMonth] = useState<number>(0);
   const [expenses, setExpenses] = useState<ITransactionsRow[]>([]);
