@@ -5,14 +5,18 @@ import { years } from "../data/constants";
 import useGlobalContext from "../hooks/useGlobalContext";
 import useAuthContext from "../hooks/useAuthContext";
 import useLogout from "../hooks/useLogout";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
+import { switchTheme, selectTheme } from "../state/themeSlice";
 
 const Header = () => {
-  const { setYear, theme, setTheme, year } = useGlobalContext();
+  const { setYear, year } = useGlobalContext();
   const handleSelectYear = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setYear(parseInt(event.target.value));
   };
   const { error: logoutError, pending: logoutPending, logout } = useLogout();
   const { user } = useAuthContext();
+  const theme = useAppSelector(selectTheme);
+  const dispatch = useAppDispatch();
 
   return (
     <header>
@@ -107,9 +111,9 @@ const Header = () => {
             className="btn btn-primary"
             onClick={() => {
               if (theme === "light") {
-                setTheme("dark");
+                dispatch(switchTheme("dark"));
               } else {
-                setTheme("light");
+                dispatch(switchTheme("light"));
               }
             }}
           >

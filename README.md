@@ -16,6 +16,7 @@ This app demonstrates the following React and Firebase concepts.
 - useReducer
 - useEffect
 - useContext
+- Redux for managing state (very basic for now)
 
 ## TODO
 

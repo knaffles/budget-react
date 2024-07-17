@@ -2,13 +2,15 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import GlobalContext from "../contexts/GlobalContext";
 import Header from "./Header";
+import { useAppSelector } from "../app/hooks";
+import { selectTheme } from "../state/themeSlice";
 
 const Layout = () => {
   const [year, setYear] = useState(new Date().getFullYear());
-  const [theme, setTheme] = useState<string>("light");
+  const theme = useAppSelector(selectTheme);
 
   return (
-    <GlobalContext.Provider value={{ theme, setTheme, year, setYear }}>
+    <GlobalContext.Provider value={{ year, setYear }}>
       <div
         className="p-4 flex flex-col w-full min-h-[100vh]"
         data-theme={theme}

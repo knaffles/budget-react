@@ -29,6 +29,4 @@ export type AuthContextType = {
 export type GlobalContextType = {
   year: number;
   setYear: (year: number) => void;
-  theme: string;
-  setTheme: (theme: string) => void;
 };
